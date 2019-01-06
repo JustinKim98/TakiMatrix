@@ -1,18 +1,18 @@
 ﻿# CMakeList.txt : Top-level CMake project file, do global configuration
 # and include sub-projects here.
 
-cmake_minimum_required (VERSION 3.8)
-
-if(UNIX)
-	set(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc )
-endif()
+cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 
 project ("TakiMatrix" LANGUAGES CXX CUDA)
 
 #policies
 cmake_policy(SET CMP0074 NEW)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Build/CMake")
+
+
 #incudes
+include(${CMAKE_CURRENT_SOURCE_DIR}/Build/CMAKE/IncludeCuda.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/Build/CMAKE/CompileOptions.cmake)
 
 # Set output directories
@@ -27,11 +27,6 @@ message(STATUS "PROJECT_BINARY_DIR: " ${PROJECT_BINARY_DIR})
 add_subdirectory (TakiMatrix/Tests/UnitTests)
 add_subdirectory (TakiMatrix/sources)
 
-find_package(CUDA QUIET)
-if(CUDA_FOUND)
-	find_package(CUDA REQUIRED)
-	include_directories(${CUDA_INCLUDE_DIRS})
-endif()
 
 # Build type - Release by default
 if(NOT CMAKE_BUILD_TYPE)

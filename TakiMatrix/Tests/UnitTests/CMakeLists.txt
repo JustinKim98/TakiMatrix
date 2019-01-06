@@ -16,26 +16,18 @@ add_executable(${target}
 
 # Project options{
 set_target_properties(${target}
-    PROPERTIES
-        
-    ${DEFAULT_PROJECT_OPTIONS}
-)
+		PROPERTIES
 
-# Compile options
-# GCC and Clang compiler options
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(DEFAULT_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS}
-        # /wd4996       # -> disable warning: non-Standard std::tr1 namespace and TR1-only machinery (because of gtest)		
-        -Wno-unused-variable
-        )
-endif()
+		${DEFAULT_PROJECT_OPTIONS}
+		)
+
 target_compile_options(${target}
-    PRIVATE
-    ${DEFAULT_COMPILE_OPTIONS}
-)
+		PRIVATE
+		${DEFAULT_COMPILE_OPTIONS}
+		)
 target_compile_definitions(${target}
-    PRIVATE
-)
+		PRIVATE
+		)
 
 # Link libraries
 target_link_libraries(${target}

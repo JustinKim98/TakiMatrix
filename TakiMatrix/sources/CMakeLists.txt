@@ -9,7 +9,9 @@ include_directories(
 		${CMAKE_CURRENT_SOURCE_DIR}/../../Includes
 )
 
-add_library(${target} test.cpp)
+add_library(${target} test.cpp test.cu ../includes/jetbrains_parser.h ../includes/test.h)
+set_target_properties( ${target}
+		PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 # Project options
 set_target_properties(${target}
