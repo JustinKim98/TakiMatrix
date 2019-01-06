@@ -1,0 +1,3 @@
+[submodule "TakiMatrix/Libraries/googletest"]
+	path = TakiMatrix/Libraries/googletest
+	url = https://github.com/google/googletest.git
