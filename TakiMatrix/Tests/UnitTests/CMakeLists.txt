@@ -3,6 +3,8 @@ set(target UnitTests)
 
 # Includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Libraries)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../includes)
 
 # Sources
 file(GLOB sources
@@ -10,7 +12,7 @@ file(GLOB sources
 
 # Build executable
 add_executable(${target}
-    ${sources} SimpleTest.hpp)
+    ${sources} UnitTests.cpp)
 
 # Project options{
 set_target_properties(${target}

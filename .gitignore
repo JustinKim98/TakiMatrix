@@ -34,3 +34,5 @@
 \.vs/TakiMatrix/v15/Browse\.VC\.opendb
 
 \.vs/
+
+CMakeSettings\.json
