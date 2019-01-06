@@ -1,7 +1,4 @@
-#include <iostream>
 #include "../includes/test.h"
+#include <iostream>
 
-int Add(int a, int b) {
-	return a + b;
-}
-
+int Add(int a, int b) { return a + b; }
