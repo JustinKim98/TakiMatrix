@@ -1,5 +1,6 @@
 # Nvcc compile options
 set(CMAKE_CUDA_FLAGS --default-stream per-thread pthreads_per_thread)
+
 # Platform and architecture setup
 #
 # Set warnings as errors flag
