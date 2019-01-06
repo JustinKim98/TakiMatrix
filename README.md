@@ -1,2 +1,2 @@
-# MatLib-cuda
+# TakiMatrix
 Linear algebra library implemented with cuda
