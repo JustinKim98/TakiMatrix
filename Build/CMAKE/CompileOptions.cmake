@@ -1,3 +1,6 @@
+
+#nvcc compile options
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Wall -std=c++14 --default-stream per-thread" )
 #
 # Platform and architecture setup
 #

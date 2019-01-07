@@ -28,8 +28,9 @@ namespace TakiMatrix {
 
         bool operator!=(const Matrix& matrix) const;
 
-    private:
         void* getDataPtr();
+
+    private:
 
         std::vector<float> data;
 
