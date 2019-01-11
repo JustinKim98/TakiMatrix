@@ -6,7 +6,7 @@
 
 namespace TakiMatrix {
 
-    Matrix::Matrix(std::vector<float>& rhs, const std::vector<int>& shape)
+    Matrix::Matrix(std::vector<float>& rhs, const std::vector<size_t>& shape)
     {
         int shape_size = 1;
         for (int elem : shape) {
@@ -45,5 +45,13 @@ namespace TakiMatrix {
     bool Matrix::operator!=(const Matrix& matrix) const
     {
         return !(matrix==*this);
+    }
+
+    void Matrix::assignData(float* first, size_t size, const std::vector<size_t>& shape)
+    {
+
+        data = std::vector<float>(size);
+        data.assign(first, first+size);
+        this->shape = shape;
     }
 } // namespace TakiMatrix

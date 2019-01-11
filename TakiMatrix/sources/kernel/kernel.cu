@@ -24,10 +24,9 @@ __global__ void subKernel(float* first, float* second, unsigned int size)
 }
 
 __global__ void multiplyKernel(const float* first, const float* second,
-        float* result, unsigned int firstRowNum,
-        unsigned int middle, unsigned int secondColNum)
+        float* result, size_t firstRowNum,
+        size_t middle, size_t secondColNum)
 {
-
     /// result will have first_row rows and second_col columns
     unsigned int resultRowNum = firstRowNum;
     unsigned int resultColNum = secondColNum;

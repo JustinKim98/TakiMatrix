@@ -12,6 +12,6 @@
 
 namespace TakiMatrix {
 
-    Matrix& multiplyGpu(const Matrix& left, const Matrix& right);
+    void multiplyGpu(const Matrix& left, const Matrix& right, Matrix& result);
 }
 #endif //TAKIMATRIX_ARTHIMETICS_HPP
