@@ -6,6 +6,7 @@
 #define TAKIMATRIX_INSTRUCTION_SET_HPP
 
 #include "../../../includes/util/matrix.hpp"
+#include <functional>
 
 namespace TakiMatrix {
     namespace processor {
@@ -13,6 +14,7 @@ namespace TakiMatrix {
             add,
             sub,
             mul,
+            dot,
             malloc_gpu,
             malloc_cpu,
             copy_d2h,
@@ -24,26 +26,53 @@ namespace TakiMatrix {
 
         class isa {
         public:
-            instruction_type instruction;
-
         protected:
             isa(instruction_type instruction);
+
+            instruction_type instruction;
         };
 
-        class add_inst : isa {
-            add_inst(matrix* operand_first, matrix* operand_second, matrix* result)
-                    :isa(instruction_type::add)
-            {
-                this->operand_first = operand_first;
-                this->operand_second = operand_second;
-                this->result = result;
-            }
+        class add : isa {
+        public:
+            add(matrix* operand_first, matrix* operand_second, matrix* result);
 
         private:
             const matrix* operand_first;
             const matrix* operand_second;
             matrix* result;
         };
+
+        class sub : isa {
+        public:
+            sub(matrix* operand_first, matrix* operand_second, matrix* result);
+
+        private:
+            const matrix* operand_first;
+            const matrix* operand_second;
+            matrix* result;
+        };
+
+        class mul : isa {
+        public:
+            mul(matrix* operand_first, matrix* operand_second, matrix* result);
+
+        private:
+            const matrix* operand_first;
+            const matrix* operand_second;
+            matrix* result;
+        };
+
+        class dot : isa {
+        public:
+            dot(matrix* operand_first, const std::function<float(float)>& functor);
+
+            dot(matrix* operand_first, std::function<float(float)>&& functor);
+
+        private:
+            const matrix* operand_first;
+            std::function<float(float)> functor;
+        };
+
     } // namespace processor
 } // namespace TakiMatrix
 

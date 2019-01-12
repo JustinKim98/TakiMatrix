@@ -20,6 +20,8 @@ namespace TakiMatrix {
     private:
         std::vector<float> data;
         std::vector<size_t> shape;
+        ///data size in bytes
+        size_t data_size = 0;
     };
 } // namespace TakiMatrix
 
