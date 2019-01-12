@@ -32,7 +32,7 @@
 *.app
 
 # Microsoft visual studio specific files
-\.vs/TakiMatrix/v15/Browse\.VC\.opendb
+\.vs/processor/v15/Browse\.VC\.opendb
 \.vs/
 CMakeSettings\.json
 
@@ -51,4 +51,4 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 cmake-build-debug/*
-cmake-build-debug/TakiMatrix\.cbp
+cmake-build-debug/processor\.cbp

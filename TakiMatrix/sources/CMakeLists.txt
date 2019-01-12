@@ -9,7 +9,7 @@ include_directories(
 		${CMAKE_CURRENT_SOURCE_DIR}/../../Includes
 )
 
-add_library(${target} test.cpp test.cu ../includes/test.h cpu_emulator/util/instruction_set.cpp ../includes/cpu_emulator/util/instruction_set.hpp)
+add_library(${target} test.cpp test.cu ../includes/test.h cpu_emulator/util/instruction_set.cpp ../includes/cpu_emulator/util/instruction_set.hpp util/matrix.cpp ../includes/util/matrix.hpp)
 set_target_properties( ${target}
 		PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 

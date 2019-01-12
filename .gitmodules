@@ -1,6 +1,6 @@
-[submodule "TakiMatrix/Libraries/googletest"]
-	path = TakiMatrix/Libraries/googletest
+[submodule "processor/Libraries/googletest"]
+	path = processor/Libraries/googletest
 	url = https://github.com/google/googletest.git
-[submodule "TakiMatrix/Libraries/googlebenchmark"]
-	path = TakiMatrix/Libraries/googlebenchmark
+[submodule "processor/Libraries/googlebenchmark"]
+	path = processor/Libraries/googlebenchmark
 	url = https://github.com/google/benchmark.git
