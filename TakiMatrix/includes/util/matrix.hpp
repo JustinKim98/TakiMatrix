@@ -1,28 +1,29 @@
 //
-// Created by jwkim98 on 19. 1. 12.
+// Created by jwkim98 on 19/01/14.
 //
 
 #ifndef TAKIMATRIX_MATRIX_HPP
 #define TAKIMATRIX_MATRIX_HPP
+#include <memory>
+#include "../cpu_emulator/processor_util/matrix_object.hpp"
 
-#include <cstdio>
-#include <vector>
+namespace TakiMatrix{
 
-namespace TakiMatrix {
-    class matrix {
+    size_t matrix_id = 0;
+
+    class matrix{
     public:
-        matrix() = default;
-
         matrix(const std::vector<float>& data, const std::vector<size_t>& shape);
+        matrix(matrix& new_matrix);
+        matrix(matrix&& new_matrix) noexcept;
 
-        matrix(const matrix& rhs);
+
 
     private:
-        std::vector<float> data;
-        std::vector<size_t> shape;
-        ///data size in bytes
-        size_t data_size = 0;
-    };
-} // namespace TakiMatrix
+        std::unique_ptr<processor::matrix_object> m_matrix_ptr;
 
-#endif // TAKIMATRIX_MATRIX_HPP
+        size_t m_matrix_id;
+    };
+}
+
+#endif //TAKIMATRIX_MATRIX_HPP

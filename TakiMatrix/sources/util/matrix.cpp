@@ -1,29 +1,26 @@
 //
-// Created by jwkim98 on 19. 1. 12.
+// Created by jwkim98 on 19/01/14.
 //
 
 #include "../../includes/util/matrix.hpp"
-#include <cassert>
 
 namespace TakiMatrix {
-    matrix::matrix(const std::vector<float>& data, const std::vector<size_t>& shape)
-            :data(data), shape(shape)
-    {
-        size_t size = 0;
-        assert(shape.size()==3);
-
-        for (auto elem : shape) {
-            size *= elem;
-        }
-        assert(size==data.size());
-        data_size = data.size()*sizeof(float);
+    matrix::matrix(const std::vector<float>& data, const std::vector<size_t>& shape){
+        m_matrix_ptr = std::make_unique<processor::matrix_object>(data, shape);
+        m_matrix_id = matrix_id++;
     }
 
-    matrix::matrix(const matrix& rhs)
+    matrix::matrix(matrix& new_matrix)
     {
-        this->data = rhs.data;
-        this->shape = rhs.shape;
-        data_size = rhs.data.size()*sizeof(float);
+        processor::matrix_object temp = *new_matrix.m_matrix_ptr;
+        m_matrix_ptr = std::make_unique<processor::matrix_object>(temp);
+        m_matrix_id = matrix_id++;
+    }
+
+    matrix::matrix(matrix&& new_matrix) noexcept
+    {
+        m_matrix_ptr = std::move(new_matrix.m_matrix_ptr);
+        m_matrix_id = matrix_id++;
     }
 
 } // namespace TakiMatrix
