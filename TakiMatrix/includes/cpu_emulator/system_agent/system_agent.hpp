@@ -11,7 +11,9 @@
 #include <vector>
 #include <deque>
 #include <list>
+#include <map>
 #include "../processor_util/instruction_set.hpp"
+#include "../../util/matrix.hpp"
 
 namespace TakiMatrix::processor {
 
@@ -23,6 +25,11 @@ namespace TakiMatrix::processor {
         transpose,
         dot_1,
         dot_2,
+    };
+
+    struct reorder_buffer_wrapper{
+        isa instruction;
+        bool is_coimpleted = false;
     };
 
     const int num_execution_units = 7;
@@ -43,6 +50,8 @@ namespace TakiMatrix::processor {
         static std::condition_variable m_enable_schedule;
         ///
         static std::vector<std::promise<int>> m_scheduler_promises;
+        ///used to commit changes to matrices used in user environment
+        static std::map<size_t, matrix> m_matrix_map;
 
         static std::promise<int> m_fetch_to_schedule;
 

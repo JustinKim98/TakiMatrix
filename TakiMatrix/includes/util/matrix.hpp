@@ -17,8 +17,6 @@ namespace TakiMatrix{
         matrix(matrix& new_matrix);
         matrix(matrix&& new_matrix) noexcept;
 
-
-
     private:
         std::unique_ptr<processor::matrix_object> m_matrix_ptr;
 
