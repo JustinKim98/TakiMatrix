@@ -19,6 +19,6 @@ namespace TakiMatrix::processor{
 };
 
     std::deque<isa> instruction_cache::m_cache_data = std::deque<isa>();
-    std::mutex instruction_cache::cache_mtx = std::mutex();
+    std::mutex instruction_cache::cache_mtx;
 }
 #endif //TAKIMATRIX_INSTRUCTION_CACHE_HPP

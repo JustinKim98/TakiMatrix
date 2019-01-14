@@ -28,8 +28,9 @@ namespace TakiMatrix::processor {
     };
 
     struct reorder_buffer_wrapper{
-        isa instruction;
-        bool is_coimpleted = false;
+        reorder_buffer_wrapper(const isa& instruction, bool is_completed);
+        isa m_instruction;
+        bool m_is_completed = false;
     };
 
     const int num_execution_units = 7;
@@ -42,28 +43,24 @@ namespace TakiMatrix::processor {
 
         void reorder_buffer_push(const isa& instruction);
 
-        isa reorder_buffer_commit();
+        void reorder_buffer_commit();
     private:
         ///determines whether putting new instructions to rs table is enabled
         static std::condition_variable m_enable_fetch;
         ///determines whether taking out instructions from rs table is enabled
         static std::condition_variable m_enable_schedule;
-        ///
+        ///promise variables from scheduler to execution units
         static std::vector<std::promise<int>> m_scheduler_promises;
         ///used to commit changes to matrices used in user environment
         static std::map<size_t, matrix> m_matrix_map;
-
-        static std::promise<int> m_fetch_to_schedule;
-
+        ///reservation table for pending instructions
         static std::list<isa>  m_rs_table;
+        ///only one thread can access m_reorder_buffer(not protected by mutex)
+        static std::deque<reorder_buffer_wrapper> m_reorder_buffer;
 
-        static std::deque<isa> m_reorder_buffer;
+        static std::deque<isa> m_instruction_queue;
 
-        static std::deque<isa> m_register_renaming_table;
-
-        static std::deque<isa> m_cache_data;
-
-        static std::mutex m_cache_mtx;
+        static std::mutex m_instruction_queue_mtx;
 
         static std::mutex m_rs_table_mtx;
     };

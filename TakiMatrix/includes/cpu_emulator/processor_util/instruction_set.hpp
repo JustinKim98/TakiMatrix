@@ -19,12 +19,14 @@ namespace TakiMatrix::processor {
 
     class isa {
     public:
+        isa(const isa& instruction);
+
+        virtual ~isa() = default;
+
     protected:
         isa(instruction_type instruction);
 
         instruction_type instruction;
-
-        virtual ~isa() = default;
     };
 
 
