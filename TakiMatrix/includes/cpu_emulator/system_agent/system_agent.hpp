@@ -5,15 +5,14 @@
 #ifndef TAKIMATRIX_SYSTEM_AGENT_HPP
 #define TAKIMATRIX_SYSTEM_AGENT_HPP
 
-
+#include "../../util/matrix.hpp"
+#include "../processor_util/instruction_set.hpp"
+#include <deque>
 #include <future>
+#include <list>
+#include <unordered_set>
 #include <thread>
 #include <vector>
-#include <deque>
-#include <list>
-#include <map>
-#include "../processor_util/instruction_set.hpp"
-#include "../../util/matrix.hpp"
 
 namespace TakiMatrix::processor {
 
@@ -27,8 +26,9 @@ namespace TakiMatrix::processor {
         dot_2,
     };
 
-    struct reorder_buffer_wrapper{
+    struct reorder_buffer_wrapper {
         reorder_buffer_wrapper(const isa& instruction, bool is_completed);
+
         isa m_instruction;
         bool m_is_completed = false;
     };
@@ -37,34 +37,51 @@ namespace TakiMatrix::processor {
 
     class system_agent {
     public:
-        void instruction_cache_push(const isa& instruction);
+        static void instruction_queue_push(const isa& instruction);
+        ///
+        isa instruction_queue_pop();
+        static bool rs_table_push(const isa& instruction);
+        /**
+         * @brief : scans m_rs_table and finds operations that are ready to be executed
+         * those operations are deleted from m_rs_table
+         * @param start_list
+         */
+        static void rs_table_scan(std::deque<isa>& start_list);
+        /// pushes new instructions to reorder buffer
+        static bool reorder_buffer_push(const isa& instruction);
+        /**
+         * @brief : commits pending instructions that has been completed, in order
+         * applies changes to user code, and wakes up pending instruction in
+         * reservation table
+         */
+        static void reorder_buffer_commit();
 
-        isa instruction_cache_pop();
-
-        void reorder_buffer_push(const isa& instruction);
-
-        void reorder_buffer_commit();
     private:
-        ///determines whether putting new instructions to rs table is enabled
+        static const size_t max_rs_table_size;
+        static const size_t max_reorder_buffer_size;
+        /// determines whether putting new instructions to rs table is enabled
         static std::condition_variable m_enable_fetch;
-        ///determines whether taking out instructions from rs table is enabled
+        /// determines whether taking out instructions from rs table is enabled
         static std::condition_variable m_enable_schedule;
-        ///promise variables from scheduler to execution units
+        /// promise variables from scheduler to execution units
         static std::vector<std::promise<int>> m_scheduler_promises;
-        ///used to commit changes to matrices used in user environment
-        static std::map<size_t, matrix> m_matrix_map;
-        ///reservation table for pending instructions
-        static std::list<isa>  m_rs_table;
-        ///only one thread can access m_reorder_buffer(not protected by mutex)
+        /// used to commit changes to matrices used in user environment
+        static std::unordered_set<matrix, matrix_hash_functor> m_matrix_map;
+        /// reservation table for pending instructions
+        static std::list<isa> m_rs_table;
+        /// only one thread can access m_reorder_buffer(not protected by mutex)
         static std::deque<reorder_buffer_wrapper> m_reorder_buffer;
 
-        static std::deque<isa> m_instruction_queue;
+        static std::deque<isa, compare_matrix> m_instruction_queue;
 
         static std::mutex m_instruction_queue_mtx;
 
         static std::mutex m_rs_table_mtx;
-    };
-}
 
+        static std::mutex m_reorder_buffer_mtx;
+    };
+
+
+} // namespace TakiMatrix::processor
 
 #endif // TAKIMATRIX_SYSTEM_AGENT_HPP
