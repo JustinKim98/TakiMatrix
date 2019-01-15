@@ -23,10 +23,6 @@ namespace TakiMatrix::processor {
 /// only one thread can access m_reorder_buffer(not protected by mutex)
     std::deque<reorder_buffer_wrapper> system_agent::m_reorder_buffer;
 
-    std::deque<isa, compare_matrix> system_agent::m_instruction_queue;
-
-    std::mutex system_agent::m_instruction_queue_mtx;
-
     std::mutex system_agent::m_rs_table_mtx;
 
     std::mutex system_agent::m_reorder_buffer_mtx;
@@ -70,7 +66,7 @@ namespace TakiMatrix::processor {
     bool system_agent::reorder_buffer_push(const isa& instruction)
     {
         reorder_buffer_wrapper temp(instruction, false);
-        std::lock_guard<std::mutex> guard(m_instruction_queue_mtx);
+        std::lock_guard<std::mutex> guard(m_reorder_buffer_mtx);
         if (m_reorder_buffer.size()>max_reorder_buffer_size)
             return false;
         m_reorder_buffer.emplace_back(temp);

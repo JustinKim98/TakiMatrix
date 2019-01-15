@@ -72,10 +72,6 @@ namespace TakiMatrix::processor {
         /// only one thread can access m_reorder_buffer(not protected by mutex)
         static std::deque<reorder_buffer_wrapper> m_reorder_buffer;
 
-        static std::deque<isa, compare_matrix> m_instruction_queue;
-
-        static std::mutex m_instruction_queue_mtx;
-
         static std::mutex m_rs_table_mtx;
 
         static std::mutex m_reorder_buffer_mtx;
