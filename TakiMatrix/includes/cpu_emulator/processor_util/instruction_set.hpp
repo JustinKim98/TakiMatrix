@@ -23,34 +23,37 @@ namespace TakiMatrix::processor {
 
         virtual ~isa() = default;
 
+        matrix_object* get_result_ptr();
+
     protected:
-        isa(instruction_type instruction);
+        explicit isa(enum instruction_type instruction);
+
+        matrix_object* result;
 
         instruction_type instruction;
+
     };
 
 
-    class add : isa {
+    class add : public isa {
     public:
         add(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result);
 
     private:
         const matrix_object* operand_first;
         const matrix_object* operand_second;
-        matrix_object* result;
     };
 
-    class mul : isa {
+    class mul : public isa {
     public:
         mul(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result);
 
     private:
         const matrix_object* operand_first;
         const matrix_object* operand_second;
-        matrix_object* result;
     };
 
-    class dot : isa {
+    class dot : public isa {
     public:
         dot(matrix_object* operand_first, const std::function<float(float)>& functor);
 
@@ -61,7 +64,7 @@ namespace TakiMatrix::processor {
         std::function<float(float)> functor;
     };
 
-    class transpose : isa {
+    class transpose : public isa {
     public:
         explicit transpose(matrix_object* operand_first);
 

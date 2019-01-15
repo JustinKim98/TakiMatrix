@@ -7,6 +7,10 @@
 namespace TakiMatrix::processor {
     isa::isa(instruction_type instruction) { this->instruction = instruction; }
 
+    matrix_object* isa::get_result_ptr(){
+        return result;
+    }
+
     add::add(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result)
             :isa(instruction_type::add)
     {
