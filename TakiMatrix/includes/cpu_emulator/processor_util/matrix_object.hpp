@@ -37,9 +37,13 @@ namespace TakiMatrix::processor {
 
         matrix_object(const matrix_object& rhs);
 
+        size_t get_id() const;
+
+        size_t get_origin_id() const;
+
     private:
-        std::vector<float> data;
-        std::vector<size_t> shape;
+        std::vector<float> m_data;
+        std::vector<size_t> m_shape;
         /// data size in bytes
         size_t data_size = 0;
         /// unique id of this matrix_object
