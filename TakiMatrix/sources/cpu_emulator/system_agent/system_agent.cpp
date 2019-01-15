@@ -35,26 +35,12 @@ namespace TakiMatrix::processor {
             bool is_completed)
             :m_instruction(instruction), m_is_completed(is_completed) { }
 
-    void system_agent::instruction_queue_push(const isa& instruction)
-    {
-        std::lock_guard<std::mutex> guard(m_instruction_queue_mtx);
-        m_instruction_queue.push_back(instruction);
-    }
-
-    isa system_agent::instruction_queue_pop()
-    {
-        std::lock_guard<std::mutex> guard(m_instruction_queue_mtx);
-        isa& instruction = m_instruction_queue.front();
-        m_instruction_queue.pop_front();
-        return instruction;
-    }
-
     bool system_agent::rs_table_push(
             const TakiMatrix::processor::isa& instruction)
     {
         if (m_rs_table.size()>max_rs_table_size)
             return false;
-        m_rs_table.push_back(instruction);
+        m_rs_table.emplace_back(instruction);
         return true;
     }
 
@@ -62,12 +48,13 @@ namespace TakiMatrix::processor {
     {
         std::unordered_set<size_t> write_operated_matrix_object_ids;
 
-        auto has_previous_write_operation = [&write_operated_matrix_object_ids](size_t matrix_object_id) {
-            if (write_operated_matrix_object_ids.find(matrix_object_id)==
-                    write_operated_matrix_object_ids.end())
-                return false;
-            return true;
-        };
+        auto has_previous_write_operation =
+                [&write_operated_matrix_object_ids](size_t matrix_object_id) {
+                    if (write_operated_matrix_object_ids.find(matrix_object_id)==
+                            write_operated_matrix_object_ids.end())
+                        return false;
+                    return true;
+                };
 
         auto rs_table_itr = m_rs_table.begin();
         for (; rs_table_itr!=m_rs_table.end(); rs_table_itr++) {

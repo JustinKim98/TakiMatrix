@@ -37,9 +37,7 @@ namespace TakiMatrix::processor {
 
     class system_agent {
     public:
-        static void instruction_queue_push(const isa& instruction);
-        ///
-        isa instruction_queue_pop();
+        /// inserts instruction to reservation table
         static bool rs_table_push(const isa& instruction);
         /**
          * @brief : scans m_rs_table and finds operations that are ready to be executed
@@ -57,7 +55,9 @@ namespace TakiMatrix::processor {
         static void reorder_buffer_commit();
 
     private:
+        /// max size of reservation table
         static const size_t max_rs_table_size;
+        /// max size of reorder buffer
         static const size_t max_reorder_buffer_size;
         /// determines whether putting new instructions to rs table is enabled
         static std::condition_variable m_enable_fetch;
