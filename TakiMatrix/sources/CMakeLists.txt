@@ -21,7 +21,9 @@ add_library(${target} test.cpp test.cu
 		../includes/cpu_emulator/front_end/instruction_cache.hpp
 		cpu_emulator/system_agent/system_agent.cpp
 		../includes/cpu_emulator/system_agent/system_agent.hpp
-		../includes/util/matrix.hpp util/matrix.cpp)
+		../includes/util/matrix.hpp util/matrix.cpp
+		cpu_emulator/system_agent/utility.cpp
+		../includes/cpu_emulator/system_agent/utility.hpp)
 
 set_target_properties( ${target}
 		PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
