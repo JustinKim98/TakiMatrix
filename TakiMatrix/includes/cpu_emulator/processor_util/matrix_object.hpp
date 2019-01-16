@@ -42,6 +42,8 @@ namespace TakiMatrix::processor {
 
         matrix_object(const matrix_object& rhs);
 
+        bool operator==(const matrix_object& first) const;
+
         size_t get_id() const;
 
         size_t get_origin_id() const;

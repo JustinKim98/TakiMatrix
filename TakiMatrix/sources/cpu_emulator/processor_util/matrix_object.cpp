@@ -52,6 +52,11 @@ namespace TakiMatrix::processor {
         data_size = rhs.m_data.size()*sizeof(float);
     }
 
+    bool matrix_object::operator==(const matrix_object& first) const{
+        return first.m_data == m_data;
+    }
+
+
     size_t matrix_object::get_id() const { return m_matrix_object_id; }
 
     size_t matrix_object::get_origin_id() const { return m_origin_id; }
