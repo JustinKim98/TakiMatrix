@@ -1,11 +1,17 @@
 //
 // Created by jwkim98 on 19. 1. 12.
 //
-
 #include "../../../includes/cpu_emulator/processor_util/matrix_object.hpp"
-#include <cassert>
 
 namespace TakiMatrix::processor {
+
+    matrix_object::matrix_object(const std::vector<size_t>& shape)
+    {
+        size_t size = calculate_size(shape);
+        m_shape = shape;
+        m_data = std::vector<size_t>(size, 0);
+    }
+
     matrix_object::matrix_object(const std::vector<float>& data,
             const std::vector<size_t>& shape)
             :m_data(data), m_shape(shape)
@@ -49,5 +55,11 @@ namespace TakiMatrix::processor {
     size_t matrix_object::get_id() const { return m_matrix_object_id; }
 
     size_t matrix_object::get_origin_id() const { return m_origin_id; }
+
+    void matrix_object::set_ready() { m_is_ready = true; }
+
+    bool matrix_object::is_ready() { return m_is_ready; }
+
+    std::vector<size_t> matrix_object::get_shape() { return m_shape; }
 
 } // namespace TakiMatrix::processor

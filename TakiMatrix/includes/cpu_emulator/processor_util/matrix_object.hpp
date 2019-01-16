@@ -5,6 +5,9 @@
 #ifndef TAKIMATRIX_MATRIX_OBJECT_HPP
 #define TAKIMATRIX_MATRIX_OBJECT_HPP
 
+
+#include "../system_agent/utility.hpp"
+#include <cassert>
 #include <cstdio>
 #include <vector>
 
@@ -14,6 +17,8 @@ namespace TakiMatrix::processor {
     class matrix_object {
     public:
         matrix_object() = default;
+
+        matrix_object(const std::vector<size_t>& shape);
 
         /**
          * @brief : constructor for temporary matrix_objects
@@ -41,6 +46,12 @@ namespace TakiMatrix::processor {
 
         size_t get_origin_id() const;
 
+        void set_ready();
+
+        bool is_ready();
+
+        std::vector<size_t> get_shape();
+
     private:
         std::vector<float> m_data;
         std::vector<size_t> m_shape;
@@ -52,6 +63,8 @@ namespace TakiMatrix::processor {
         bool m_has_origin = false;
         /// id of origin matrix (if it has one)
         size_t m_origin_id = 0;
+        /// set true if instruction is completed, and ready to be committed
+        bool m_is_ready = false;
     };
 } // namespace TakiMatrix::processor
 
