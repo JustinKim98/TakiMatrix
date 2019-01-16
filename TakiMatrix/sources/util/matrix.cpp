@@ -44,7 +44,7 @@ namespace TakiMatrix {
         auto result_matrix_object_ptr = new matrix_object(shape);
         auto instruction =
                 add(m_matrix_ptr, first.m_matrix_ptr, result_matrix_object_ptr);
-        auto lock = std::unique_lock(system_agent::m_fetch_schedule_mtx);
+        auto lock = std::unique_lock<std::mutex>(system_agent::m_fetch_schedule_mtx);
         system_agent::fetch_enable.wait(lock);
         return matrix(result_matrix_object_ptr);
     }

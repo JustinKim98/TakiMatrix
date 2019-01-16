@@ -9,7 +9,7 @@ namespace TakiMatrix::processor {
     {
         size_t size = calculate_size(shape);
         m_shape = shape;
-        m_data = std::vector<size_t>(size, 0);
+        m_data = std::vector<float>(size, 0);
     }
 
     matrix_object::matrix_object(const std::vector<float>& data,
