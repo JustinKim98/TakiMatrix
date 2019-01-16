@@ -16,14 +16,12 @@ namespace TakiMatrix::processor {
     std::condition_variable system_agent::m_enable_schedule;
 /// promise variables from scheduler to execution units
     std::vector<std::promise<int>> system_agent::m_scheduler_promises;
-/// used to commit changes to matrices used in user environment
-    std::unordered_set<matrix, matrix_hash_functor> system_agent::m_matrix_map;
 /// reservation table for pending instructions
     std::list<isa> system_agent::m_rs_table;
 /// only one thread can access m_reorder_buffer(not protected by mutex)
     std::deque<reorder_buffer_wrapper> system_agent::m_reorder_buffer;
 
-    std::mutex system_agent::m_rs_table_mtx;
+    std::mutex system_agent::m_fetch_schedule_mtx;
 
     std::mutex system_agent::m_reorder_buffer_mtx;
 
