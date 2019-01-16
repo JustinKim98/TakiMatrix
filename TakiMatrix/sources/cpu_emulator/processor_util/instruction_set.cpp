@@ -7,11 +7,10 @@
 namespace TakiMatrix::processor {
     isa::isa(instruction_type instruction) { this->instruction = instruction; }
 
-    matrix_object* isa::get_result_ptr(){
-        return result;
-    }
+    matrix_object* isa::get_result_ptr() { return result; }
 
-    add::add(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result)
+    add::add(matrix_object* operand_first, matrix_object* operand_second,
+            matrix_object* result)
             :isa(instruction_type::add)
     {
         this->operand_first = operand_first;
@@ -19,7 +18,17 @@ namespace TakiMatrix::processor {
         this->result = result;
     }
 
-    mul::mul(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result)
+    sub::sub(matrix_object* operand_first, matrix_object* operand_second,
+            matrix_object* result)
+            :isa(instruction_type::sub)
+    {
+        this->operand_first = operand_first;
+        this->operand_second = operand_second;
+        this->result = result;
+    }
+
+    mul::mul(matrix_object* operand_first, matrix_object* operand_second,
+            matrix_object* result)
             :isa(instruction_type::mul)
     {
         this->operand_first = operand_first;
@@ -27,7 +36,8 @@ namespace TakiMatrix::processor {
         this->result = result;
     }
 
-    dot::dot(matrix_object* operand_first, const std::function<float(float)>& functor)
+    dot::dot(matrix_object* operand_first,
+            const std::function<float(float)>& functor)
             :isa(instruction_type::dot)
     {
         this->operand_first = operand_first;

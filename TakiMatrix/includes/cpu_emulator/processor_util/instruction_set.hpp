@@ -12,6 +12,7 @@
 namespace TakiMatrix::processor {
     enum class instruction_type {
         add,
+        sub,
         mul,
         dot,
         transpose,
@@ -43,6 +44,17 @@ namespace TakiMatrix::processor {
         const matrix_object* operand_first;
         const matrix_object* operand_second;
     };
+
+
+    class sub : public isa {
+    public:
+        sub(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result);
+
+    private:
+        const matrix_object* operand_first;
+        const matrix_object* operand_second;
+    };
+
 
     class mul : public isa {
     public:
