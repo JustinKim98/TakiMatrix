@@ -61,6 +61,10 @@ namespace TakiMatrix::processor {
         }
     }
 
+    size_t system_agent::rs_table_size(){
+        return m_rs_table.size();
+    }
+
     bool system_agent::reorder_buffer_push(const isa& instruction)
     {
         reorder_buffer_wrapper temp(instruction, false);

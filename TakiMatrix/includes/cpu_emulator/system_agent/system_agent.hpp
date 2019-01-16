@@ -43,6 +43,8 @@ namespace TakiMatrix::processor {
          * @param start_list
          */
         static void rs_table_scan(std::deque<isa>& start_list);
+
+        static size_t rs_table_size();
         /// pushes new instructions to reorder buffer
         static bool reorder_buffer_push(const isa& instruction);
         /**
@@ -59,12 +61,12 @@ namespace TakiMatrix::processor {
         static std::mutex m_fetch_schedule_mtx;
 
         static std::mutex m_reorder_buffer_mtx;
-
-    private:
         /// max size of reservation table
         static const size_t max_rs_table_size;
         /// max size of reorder buffer
         static const size_t max_reorder_buffer_size;
+
+    private:
         /// determines whether putting new instructions to rs table is enabled
         static std::condition_variable m_enable_fetch;
         /// determines whether taking out instructions from rs table is enabled
