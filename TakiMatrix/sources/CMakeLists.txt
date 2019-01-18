@@ -15,15 +15,13 @@ add_library(${target} test.cpp test.cu
 		../includes/cpu_emulator/processor_util/instruction_set.hpp
 		cpu_emulator/processor_util/matrix_object.cpp
 		../includes/cpu_emulator/processor_util/matrix_object.hpp
-		cpu_emulator/front_end/fetch.cpp
-		../includes/cpu_emulator/front_end/fetch.hpp
-		cpu_emulator/front_end/instruction_cache.cpp
-		../includes/cpu_emulator/front_end/instruction_cache.hpp
-		cpu_emulator/system_agent/system_agent.cpp
-		../includes/cpu_emulator/system_agent/system_agent.hpp
+        cpu_emulator/front_end/instruction_queue.cpp
+        ../includes/cpu_emulator/front_end/instruction_queue.hpp
+		cpu_emulator/system_agent/process.cpp
+		../includes/cpu_emulator/system_agent/process.hpp
 		../includes/util/matrix.hpp util/matrix.cpp
 		cpu_emulator/system_agent/utility.cpp
-		../includes/cpu_emulator/system_agent/utility.hpp)
+		../includes/cpu_emulator/system_agent/utility.hpp cpu_emulator/front_end/reservation_table.cpp ../includes/cpu_emulator/front_end/reservation_table.hpp)
 
 set_target_properties( ${target}
 		PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
