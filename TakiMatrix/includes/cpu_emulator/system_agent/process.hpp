@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef TAKIMATRIX_SYSTEM_AGENT_HPP
-#define TAKIMATRIX_SYSTEM_AGENT_HPP
+#ifndef TAKIMATRIX_PROCESS_HPP
+#define TAKIMATRIX_PROCESS_HPP
 
 #include "../processor_util/instruction_set.hpp"
 #include "../front_end/instruction_queue.hpp"
@@ -34,18 +34,33 @@ namespace TakiMatrix::processor {
 
     const int num_execution_units = 7;
 
-    class system_agent {
+    class process {
     public:
-        system_agent() = default;
+        process();
 
+        void execute(std::thread to_execute);
+
+        void execute_async(std::thread to_execute);
+
+        void synchronize();
+
+        void instruction_queue_push(const isa& instruction);
+
+        isa instruction_queue_pop();
+
+        void instruction_queue_wait_until_empty();
+
+        void reservation_table_insert(const isa& instruction);
+
+        std::deque<isa> reservation_table_scan();
 
     private:
+
         /// instruction queue to store fetched instructions
         instruction_queue m_instruction_queue;
         /// reservation table to store pending instructions to be executed
         reservation_table m_reservation_table;
-
     };
 
 } // namespace TakiMatrix::processor
-#endif // TAKIMATRIX_SYSTEM_AGENT_HPP
+#endif // TAKIMATRIX_PROCESS_HPP
