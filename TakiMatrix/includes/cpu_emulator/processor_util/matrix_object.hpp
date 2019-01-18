@@ -5,7 +5,6 @@
 #ifndef TAKIMATRIX_MATRIX_OBJECT_HPP
 #define TAKIMATRIX_MATRIX_OBJECT_HPP
 
-
 #include "../system_agent/utility.hpp"
 #include <cassert>
 #include <cstdio>
@@ -21,24 +20,15 @@ namespace TakiMatrix::processor {
         matrix_object(const std::vector<size_t>& shape);
 
         /**
-         * @brief : constructor for temporary matrix_objects
+         * @brief : constructor for matrix_objects
          * (Not associated with matrix object in user code)
          * @param data : data for this matrix
          * @param shape : shape of the data
+         * @param has_origin : true if this matrix_object is non-temporary false
+         * otherwise
          */
         matrix_object(const std::vector<float>& data,
-                const std::vector<size_t>& shape);
-
-        /**
-         * @brief : constructor for real matrix_objects
-         * (Associated with matrix object in user code)
-         * @param data : data for this matrix
-         * @param shape : shape of the data
-         * @param origin_id : id of user-code matrix that this matrix_object is
-         * associated with
-         */
-        matrix_object(const std::vector<float>& data,
-                const std::vector<size_t>& shape, size_t origin_id);
+                const std::vector<size_t>& shape, bool has_origin = false);
 
         matrix_object(const matrix_object& rhs);
 
@@ -51,6 +41,8 @@ namespace TakiMatrix::processor {
         void set_ready();
 
         bool is_ready();
+
+        bool has_origin();
 
         std::vector<size_t> get_shape();
 
@@ -66,7 +58,7 @@ namespace TakiMatrix::processor {
         /// id of origin matrix (if it has one)
         size_t m_origin_id = 0;
         /// set true if instruction is completed, and ready to be committed
-        bool m_is_ready = false;
+        bool m_is_completed = false;
     };
 } // namespace TakiMatrix::processor
 

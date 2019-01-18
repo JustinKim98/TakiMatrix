@@ -13,7 +13,7 @@ namespace TakiMatrix::processor {
     }
 
     matrix_object::matrix_object(const std::vector<float>& data,
-            const std::vector<size_t>& shape)
+            const std::vector<size_t>& shape, bool has_origin)
             :m_data(data), m_shape(shape)
     {
         size_t size = 0;
@@ -25,24 +25,7 @@ namespace TakiMatrix::processor {
         assert(size==data.size());
         data_size = data.size()*sizeof(float);
         m_matrix_object_id = matrix_object_id++;
-    }
-
-    matrix_object::matrix_object(const std::vector<float>& data,
-            const std::vector<size_t>& shape,
-            size_t origin_id)
-    {
-        size_t size = 0;
-        assert(shape.size()==3);
-
-        for (auto elem : shape) {
-            size *= elem;
-        }
-        assert(size==data.size());
-        data_size = data.size()*sizeof(float);
-        m_matrix_object_id = matrix_object_id++;
-
-        m_has_origin = true;
-        m_origin_id = origin_id;
+        m_has_origin = has_origin;
     }
 
     matrix_object::matrix_object(const matrix_object& rhs)
@@ -61,9 +44,9 @@ namespace TakiMatrix::processor {
 
     size_t matrix_object::get_origin_id() const { return m_origin_id; }
 
-    void matrix_object::set_ready() { m_is_ready = true; }
+    void matrix_object::set_ready() { m_is_completed = true; }
 
-    bool matrix_object::is_ready() { return m_is_ready; }
+    bool matrix_object::is_ready() { return m_is_completed; }
 
     std::vector<size_t> matrix_object::get_shape() { return m_shape; }
 
