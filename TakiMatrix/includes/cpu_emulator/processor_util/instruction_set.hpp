@@ -1,13 +1,17 @@
-//
-// Created by jwkim98 on 19. 1. 12.
-// takion -> 빠르다/
-//
+/**
+ * @author : Justin Kim
+ * @version : 1.0
+ * basic instruction set for processor
+ * new instructions may be added or instructions may be refactored after this
+ * contains shared_ptr for matrix_objects for processing
+ */
 
 #ifndef TAKIMATRIX_INSTRUCTION_SET_HPP
 #define TAKIMATRIX_INSTRUCTION_SET_HPP
 
 #include "matrix_object.hpp"
 #include <functional>
+#include <memory>
 
 namespace TakiMatrix::processor {
     enum class instruction_type {
@@ -18,72 +22,29 @@ namespace TakiMatrix::processor {
         transpose,
     };
 
-    class isa {
+    class instruction {
     public:
-        isa(const isa& instruction);
+        explicit instruction(enum instruction_type type,
+                const std::shared_ptr<matrix_object>& operand_first,
+                const std::shared_ptr<matrix_object>& operand_second,
+                std::shared_ptr<matrix_object>& result);
 
-        virtual ~isa() = default;
+        explicit instruction(enum instruction_type type,
+                const std::shared_ptr<matrix_object>& operand_first,
+                const std::shared_ptr<matrix_object>& operand_second,
+                std::shared_ptr<matrix_object>& result,
+                const std::function<float(float)>& functor);
 
-        matrix_object* get_result_ptr();
+        virtual ~instruction() = default;
+
+        std::shared_ptr<matrix_object> get_result_ptr();
 
     protected:
-        explicit isa(enum instruction_type instruction);
-
-        matrix_object* result;
-
-        instruction_type instruction;
-
+        instruction_type m_instruction_type;
+        const std::shared_ptr<matrix_object> m_operand_first;
+        const std::shared_ptr<matrix_object> m_operand_second;
+        std::shared_ptr<matrix_object> m_result;
+        const std::function<float(float)> m_functor = nullptr;
     };
-
-
-    class add : public isa {
-    public:
-        add(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result);
-
-    private:
-        const matrix_object* operand_first;
-        const matrix_object* operand_second;
-    };
-
-
-    class sub : public isa {
-    public:
-        sub(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result);
-
-    private:
-        const matrix_object* operand_first;
-        const matrix_object* operand_second;
-    };
-
-
-    class mul : public isa {
-    public:
-        mul(matrix_object* operand_first, matrix_object* operand_second, matrix_object* result);
-
-    private:
-        const matrix_object* operand_first;
-        const matrix_object* operand_second;
-    };
-
-    class dot : public isa {
-    public:
-        dot(matrix_object* operand_first, const std::function<float(float)>& functor);
-
-        dot(matrix_object* operand_first, std::function<float(float)>&& functor);
-
-    private:
-        const matrix_object* operand_first;
-        std::function<float(float)> functor;
-    };
-
-    class transpose : public isa {
-    public:
-        explicit transpose(matrix_object* operand_first);
-
-    private:
-        const matrix_object* operand_first;
-    };
-
 } // namespace TakiMatrix::processor
-
 #endif // TAKIMATRIX_INSTRUCTION_SET_HPP

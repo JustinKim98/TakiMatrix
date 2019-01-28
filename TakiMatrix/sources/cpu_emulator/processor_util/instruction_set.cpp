@@ -1,59 +1,25 @@
-//
-// Created by jwkim98 on 19. 1. 12.
-//
+/**
+ * instruction_set.cpp
+ */
 
 #include "../../../includes/cpu_emulator/processor_util/instruction_set.hpp"
 
 namespace TakiMatrix::processor {
-    isa::isa(instruction_type instruction) { this->instruction = instruction; }
+    instruction::instruction(enum instruction_type type,
+            const std::shared_ptr<matrix_object>& operand_first,
+            const std::shared_ptr<matrix_object>& operand_second,
+            std::shared_ptr<matrix_object>& result)
+            :m_instruction_type(type), m_operand_first(operand_first),
+             m_operand_second(operand_second), m_result(result) { }
 
-    matrix_object* isa::get_result_ptr() { return result; }
-
-    add::add(matrix_object* operand_first, matrix_object* operand_second,
-            matrix_object* result)
-            :isa(instruction_type::add)
-    {
-        this->operand_first = operand_first;
-        this->operand_second = operand_second;
-        this->result = result;
-    }
-
-    sub::sub(matrix_object* operand_first, matrix_object* operand_second,
-            matrix_object* result)
-            :isa(instruction_type::sub)
-    {
-        this->operand_first = operand_first;
-        this->operand_second = operand_second;
-        this->result = result;
-    }
-
-    mul::mul(matrix_object* operand_first, matrix_object* operand_second,
-            matrix_object* result)
-            :isa(instruction_type::mul)
-    {
-        this->operand_first = operand_first;
-        this->operand_second = operand_second;
-        this->result = result;
-    }
-
-    dot::dot(matrix_object* operand_first,
+    instruction::instruction(enum instruction_type type,
+            const std::shared_ptr<matrix_object>& operand_first,
+            const std::shared_ptr<matrix_object>& operand_second,
+            std::shared_ptr<matrix_object>& result,
             const std::function<float(float)>& functor)
-            :isa(instruction_type::dot)
-    {
-        this->operand_first = operand_first;
-        this->functor = functor;
-    }
+            :m_instruction_type(type), m_operand_first(operand_first),
+             m_operand_second(operand_second), m_result(result), m_functor(functor) { }
 
-    dot::dot(matrix_object* operand_first, std::function<float(float)>&& functor)
-            :isa(instruction_type::dot)
-    {
-        this->operand_first = operand_first;
-        this->functor = std::forward<std::function<float(float)>>(functor);
-    }
+    std::shared_ptr<matrix_object> instruction::get_result_ptr() { return m_result; }
 
-    transpose::transpose(matrix_object* operand_first)
-            :isa(instruction_type::transpose)
-    {
-        this->operand_first = operand_first;
-    }
 } // namespace TakiMatrix::processor
