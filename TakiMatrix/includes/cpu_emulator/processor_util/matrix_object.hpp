@@ -6,29 +6,30 @@
 #define TAKIMATRIX_MATRIX_OBJECT_HPP
 
 #include "../system_agent/utility.hpp"
+#include <atomic>
 #include <cassert>
 #include <cstdio>
 #include <vector>
 
 namespace TakiMatrix::processor {
-    size_t matrix_object_id = 0;
+    std::atomic<size_t> matrix_object_count;
 
     class matrix_object {
     public:
         matrix_object() = default;
-
-        matrix_object(const std::vector<size_t>& shape);
-
         /**
-         * @brief : constructor for matrix_objects
+         * constructs matrix_object with empty data(initialized to 0) with size of shape
+         * @param shape : shape of new empty matrix_object
+         */
+        explicit matrix_object(const std::vector<size_t>& shape);
+        /**
+         * constructs matrix_object with vector
          * (Not associated with matrix object in user code)
          * @param data : data for this matrix
          * @param shape : shape of the data
-         * @param has_origin : true if this matrix_object is non-temporary false
-         * otherwise
          */
         matrix_object(const std::vector<float>& data,
-                const std::vector<size_t>& shape, bool has_origin = false);
+                const std::vector<size_t>& shape);
 
         matrix_object(const matrix_object& rhs);
 
@@ -36,13 +37,9 @@ namespace TakiMatrix::processor {
 
         size_t get_id() const;
 
-        size_t get_origin_id() const;
-
         void set_ready();
 
         bool is_ready();
-
-        bool has_origin();
 
         std::vector<size_t> get_shape();
 
@@ -50,13 +47,9 @@ namespace TakiMatrix::processor {
         std::vector<float> m_data;
         std::vector<size_t> m_shape;
         /// data size in bytes
-        size_t data_size = 0;
+        size_t m_data_size = 0;
         /// unique id of this matrix_object
-        size_t m_matrix_object_id;
-        /// true if this object is non-temporary
-        bool m_has_origin = false;
-        /// id of origin matrix (if it has one)
-        size_t m_origin_id = 0;
+        size_t m_matrix_object_id = 0;
         /// set true if instruction is completed, and ready to be committed
         bool m_is_completed = false;
     };
