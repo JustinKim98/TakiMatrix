@@ -19,16 +19,32 @@ namespace TakiMatrix {
 
     class matrix {
     public:
-        matrix(process& processor,const std::vector<float>& data, const std::vector<size_t>& shape);
+        /**
+         * constructor for matrix object
+         * @param processor : inherited processor for processing the thread
+         * @param data : data to initialize the matrix
+         * @param shape : shape of the data (shape must match the size of data)
+         */
+        matrix(std::reference_wrapper<process> processor, const std::vector<float>& data,
+                const std::vector<size_t>& shape);
+        /**
+         * construct matrix object using matrix_object_ptr
+         * @param processor : processor for processing the thread
+         * @param matrix_object_ptr : shared pointer to matrix_object_ptr to
+         * initialize the matrix
+         */
+        explicit matrix(std::reference_wrapper<process> processor,
+                std::shared_ptr<matrix_object>& matrix_object_ptr);
 
-        explicit matrix(process& processor, matrix_object* matrix_object_ptr);
+        /**
+         * copy constructor for this matrix
+         *  constructs new matrix and shares ownership of matrix_object with
+         * 'first'
+         * @param new_matrix : matrix object to copy
+         */
+        matrix(matrix& new_matrix) = default;
 
-        matrix(matrix& new_matrix);
-
-        matrix(matrix&& new_matrix) noexcept;
-
-        ~matrix();
-
+        matrix(matrix&& new_matrix) = default;
         /**
          * @brief : decodes following operation to ISA and renames matrix_object value
          * matrix_object's data is updated when corresponding operation is committed
@@ -41,9 +57,9 @@ namespace TakiMatrix {
         matrix operator-(const matrix& first);
 
         matrix operator*(const matrix& first);
+
         /**
          * @brief : compares matrices element by element
-         * these instructions does not create isa
          * @param first : matrix to compare with
          * @return : true if matrices are identical
          */
@@ -51,21 +67,10 @@ namespace TakiMatrix {
 
         bool operator!=(const matrix& first);
 
-        /// think about branches
-        size_t get_id() const;
-
     private:
         /// pointer to matrix_object
-        /// deleted by destructor only when matrix is l-value reference
-        matrix_object* m_matrix_ptr;
-
-        size_t m_matrix_id;;
-
+        std::shared_ptr<matrix_object> m_matrix_ptr;
         std::reference_wrapper<process> m_processor;
-    };
-
-    struct matrix_hash_functor {
-        size_t operator()(const matrix& obj) const;
     };
 } // namespace TakiMatrix
 
