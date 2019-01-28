@@ -25,17 +25,17 @@ namespace TakiMatrix::processor {
          * inserts instruction to the end of the reservation table
          * @param instruction : instruction to insert
          */
-        void insert(const isa& instruction);
+        void insert(const instruction& instruction);
         /**
          * scans the reservation table, and puts executable instructions to
          * start_list (collects instructions without read-after-write dependency)
          * @param start_list : reference of deque to insert executable instructions
          */
-        void scan(std::deque<isa>& start_list);
+        void scan(std::deque<instruction>& start_list);
 
     private:
         const size_t m_maximum_table_size;
-        std::list<isa> m_reservation_table;
+        std::list<instruction> m_reservation_table;
         std::mutex m_mtx;
         std::condition_variable m_cond;
     };

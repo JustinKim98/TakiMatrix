@@ -8,7 +8,7 @@ namespace TakiMatrix::processor {
 instruction_queue::instruction_queue(size_t queue_size)
     : m_maximum_queue_size(queue_size) {}
 
-void instruction_queue::push(const isa &instruction) {
+void instruction_queue::push(const instruction &instruction) {
   std::unique_lock<std::mutex> lock(instruction_queue_mtx);
   m_cond.wait(lock, [this]() {
     return m_instruction_queue.size() < m_maximum_queue_size;
@@ -18,12 +18,12 @@ void instruction_queue::push(const isa &instruction) {
   m_cond.notify_all();
 }
 
-isa instruction_queue::pop() {
+instruction instruction_queue::pop() {
   std::unique_lock<std::mutex> lock(instruction_queue_mtx);
   m_cond.wait(lock, [this]() {
     return m_instruction_queue.size() < m_maximum_queue_size;
   });
-  isa instruction = m_instruction_queue.front();
+  instruction instruction = m_instruction_queue.front();
   m_instruction_queue.pop_front();
   lock.unlock();
   m_cond.notify_all();

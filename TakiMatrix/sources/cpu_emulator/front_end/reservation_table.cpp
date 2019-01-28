@@ -9,7 +9,7 @@ namespace TakiMatrix::processor {
     reservation_table::reservation_table(size_t table_size)
             :m_maximum_table_size(table_size) { }
 
-    void reservation_table::insert(const isa& instruction)
+    void reservation_table::insert(const instruction& instruction)
     {
         std::unique_lock<std::mutex> lock(m_mtx);
         m_cond.wait(lock, [this]() {
@@ -20,7 +20,7 @@ namespace TakiMatrix::processor {
         m_cond.notify_all();
     }
 
-    void reservation_table::scan(std::deque<isa>& start_list)
+    void reservation_table::scan(std::deque<instruction>& start_list)
     {
         std::unordered_set<size_t> write_operated_matrix_object_ids;
 

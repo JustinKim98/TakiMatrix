@@ -8,14 +8,14 @@
 namespace TakiMatrix::processor {
 
     void process::instruction_queue_push(
-            const TakiMatrix::processor::isa& instruction)
+            const TakiMatrix::processor::instruction& instruction)
     {
         m_instruction_queue.push(instruction);
     }
 
-    isa process::instruction_queue_pop() { return m_instruction_queue.pop(); }
+    instruction process::instruction_queue_pop() { return m_instruction_queue.pop(); }
 
-    void process::reservation_table_insert(const isa& instruction)
+    void process::reservation_table_insert(const instruction& instruction)
     {
         m_reservation_table.insert(instruction);
     }
@@ -25,9 +25,9 @@ namespace TakiMatrix::processor {
         m_instruction_queue.wait_until_empty();
     }
 
-    std::deque<isa> process::reservation_table_scan()
+    std::deque<instruction> process::reservation_table_scan()
     {
-        std::deque<isa> start_list;
+        std::deque<instruction> start_list;
         m_reservation_table.scan(start_list);
         return start_list;
     }

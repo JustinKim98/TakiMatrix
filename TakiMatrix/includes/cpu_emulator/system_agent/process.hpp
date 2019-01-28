@@ -1,22 +1,22 @@
 /**
  * system_agent contains essential resources to perform ILP analysis
  *
- * system_agent includes reservation table, instruction queue, and execution units
- * defining this class will initialize a virtual processor
+ * system_agent includes reservation table, instruction queue, and execution
+ * units defining this class will initialize a virtual processor
  *
  */
 
 #ifndef TAKIMATRIX_PROCESS_HPP
 #define TAKIMATRIX_PROCESS_HPP
 
-#include "../processor_util/instruction_set.hpp"
 #include "../front_end/instruction_queue.hpp"
 #include "../front_end/reservation_table.hpp"
+#include "../processor_util/instruction_set.hpp"
 #include <deque>
 #include <future>
 #include <list>
-#include <unordered_set>
 #include <thread>
+#include <unordered_set>
 #include <vector>
 
 namespace TakiMatrix::processor {
@@ -31,7 +31,6 @@ namespace TakiMatrix::processor {
         dot_2,
     };
 
-
     const int num_execution_units = 7;
 
     class process {
@@ -43,23 +42,37 @@ namespace TakiMatrix::processor {
         void execute_async(std::thread to_execute);
 
         void synchronize();
-
-        void instruction_queue_push(const isa& instruction);
-
-        isa instruction_queue_pop();
-
+        /**
+         * pushes instruction to concurrent instruction queue for this process
+         * @param instruction : instruction to push into the queue
+         */
+        void instruction_queue_push(const instruction& instruction);
+        /**
+         * pops instruction from the concurrent instruction queue for this process
+         * @return : instruction to be executed
+         */
+        instruction instruction_queue_pop();
+        /**
+         * waits until instruction queue is empty
+         * this method can be used for synchronization or branches
+         */
         void instruction_queue_wait_until_empty();
-
-        void reservation_table_insert(const isa& instruction);
-
-        std::deque<isa> reservation_table_scan();
-
+        /**
+         * inserts instruction to the reservation table
+         * @param instruction : instruction to insert
+         */
+        void reservation_table_insert(const instruction& instruction);
+        /**
+         * scans reservation table and collects instructions without dependency
+         * @return : instructions ready to be executed
+         */
+        std::deque<instruction> reservation_table_scan();
     private:
-
         /// instruction queue to store fetched instructions
         instruction_queue m_instruction_queue;
         /// reservation table to store pending instructions to be executed
         reservation_table m_reservation_table;
+        size_t matrix_object_count = 0;
     };
 
 } // namespace TakiMatrix::processor

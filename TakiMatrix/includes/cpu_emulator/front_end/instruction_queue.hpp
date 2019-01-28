@@ -26,18 +26,18 @@ namespace TakiMatrix::processor {
          * @brief : pushes instructions into the queue
          * @param instruction : instruction to execute
          */
-        void push(const isa& instruction);
+        void push(const instruction& instruction);
         /**
          * @brief : pops instructions from the queue
          * @return : popped instruction
          */
-        isa pop();
+        instruction pop();
 
     private:
 
         const size_t m_maximum_queue_size;
 
-        std::deque<isa> m_instruction_queue;
+        std::deque<instruction> m_instruction_queue;
 
         std::mutex instruction_queue_mtx;
 
