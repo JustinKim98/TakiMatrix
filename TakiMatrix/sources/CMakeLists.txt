@@ -21,7 +21,11 @@ add_library(${target} test.cpp test.cu
 		../includes/cpu_emulator/system_agent/process.hpp
 		../includes/util/matrix.hpp util/matrix.cpp
 		cpu_emulator/system_agent/utility.cpp
-		../includes/cpu_emulator/system_agent/utility.hpp cpu_emulator/front_end/reservation_table.cpp ../includes/cpu_emulator/front_end/reservation_table.hpp)
+		../includes/cpu_emulator/system_agent/utility.hpp
+		cpu_emulator/front_end/reservation_table.cpp
+		../includes/cpu_emulator/front_end/reservation_table.hpp
+		cpu_emulator/execution_units/units/essential_unit.cpp
+		../includes/cpu_emulator/execution_units/units/essential_unit.hpp)
 
 set_target_properties( ${target}
 		PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
