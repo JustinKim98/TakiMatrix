@@ -16,27 +16,36 @@ namespace TakiMatrix::processor {
     class instruction_queue {
     public:
         /**
-         * @brief : this class implements instruction cache
+         * this class implements instruction cache
          * that can be concurrently accessed by producer-consumer method
          * @param queue_size : maximum queue size that this class can hold
          */
         explicit instruction_queue(size_t queue_size = 100);
+        /**
+         * waits until m_instruction_queue is empty
+         * this method can be used to wait until specific instruction is executed
+         */
         void wait_until_empty();
         /**
-         * @brief : pushes instructions into the queue
-         * @param instruction : instruction to execute
+         * waits until operation on matrix_ptr is completed
+         * @param matrix_ptr : ptr to matrix_object to wait for
+         */
+        void wait_for(std::shared_ptr<matrix_object> matrix_ptr);
+        /**
+         * adds instruction into the front of m_instruction_queue
+         * @param instruction : instruction to add
          */
         void push(const instruction& instruction);
         /**
-         * @brief : pops instructions from the queue
-         * @return : popped instruction
+         * gets last instruction in the m_instruction_queue and removes it from the m_instruction_queue
+         * @return : last instruction in the m_instruction_queue
          */
         instruction pop();
 
     private:
-
+        /// m_maximum_queue_size
         const size_t m_maximum_queue_size;
-
+        /// queue storing instructions
         std::deque<instruction> m_instruction_queue;
 
         std::mutex instruction_queue_mtx;
