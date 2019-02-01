@@ -20,7 +20,7 @@ namespace TakiMatrix {
     class matrix {
     public:
         /**
-         * constructor for matrix object
+         * constructor for matrix objects
          * @param processor : inherited processor for processing the thread
          * @param data : data to initialize the matrix
          * @param shape : shape of the data (shape must match the size of data)
@@ -35,7 +35,6 @@ namespace TakiMatrix {
          */
         explicit matrix(std::reference_wrapper<process> processor,
                 std::shared_ptr<matrix_object>& matrix_object_ptr);
-
         /**
          * copy constructor for this matrix
          *  constructs new matrix and shares ownership of matrix_object with
@@ -57,7 +56,6 @@ namespace TakiMatrix {
         matrix operator-(const matrix& first);
 
         matrix operator*(const matrix& first);
-
         /**
          * @brief : compares matrices element by element
          * @param first : matrix to compare with
@@ -66,6 +64,12 @@ namespace TakiMatrix {
         bool operator==(const matrix& first);
 
         bool operator!=(const matrix& first);
+        /**
+         * gets shared_ptr of matrix_object this class stores
+         * waits until matrix_object is completed
+         * @return : shared_ptr of matrix_object this class stores
+         */
+        std::shared_ptr<matrix_object> matrix_ptr() const;
 
     private:
         /// pointer to matrix_object

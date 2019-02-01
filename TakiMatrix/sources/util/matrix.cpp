@@ -56,10 +56,16 @@ namespace TakiMatrix {
 
     bool matrix::operator==(const matrix& first)
     {
-        m_processor.get().instruction_queue_wait_until_empty();
+        m_processor.get().get_instruction_queue().wait_for(first.matrix_ptr());
         return *(first.m_matrix_ptr)==*m_matrix_ptr;
     }
 
     bool matrix::operator!=(const matrix& first) { return !(*this==first); }
+
+    std::shared_ptr<matrix_object> matrix::matrix_ptr() const{
+        if(!m_matrix_ptr->is_ready())
+            m_processor.get().get_instruction_queue().wait_for(m_matrix_ptr);
+        return m_matrix_ptr;
+    }
 
 } // namespace TakiMatrix
