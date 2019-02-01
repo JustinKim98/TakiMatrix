@@ -36,6 +36,7 @@ namespace TakiMatrix::processor {
     private:
         const size_t m_maximum_table_size;
         std::list<instruction> m_reservation_table;
+        std::deque<instruction> m_dependency_free_instruction_table;
         std::mutex m_mtx;
         std::condition_variable m_cond;
     };

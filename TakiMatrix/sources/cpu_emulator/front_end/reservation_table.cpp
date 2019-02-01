@@ -22,6 +22,10 @@ namespace TakiMatrix::processor {
 
     void reservation_table::scan(std::deque<instruction>& start_list)
     {
+        /**
+         * to avoid RAW dependency problem, it must check matrix_object whether it has
+         * write operation previously
+         */
         std::unordered_set<size_t> write_operated_matrix_object_ids;
 
         auto has_previous_write_operation =
@@ -34,10 +38,16 @@ namespace TakiMatrix::processor {
 
         std::unique_lock<std::mutex> lock(m_mtx);
         m_cond.wait(lock, [this]() { return !m_reservation_table.empty(); });
+
         auto rs_table_itr = m_reservation_table.begin();
         for (; rs_table_itr!=m_reservation_table.end(); rs_table_itr++) {
-            size_t matrix_object_id = rs_table_itr->get_result_ptr()->get_id();
-            if (!has_previous_write_operation(matrix_object_id)) {
+            size_t first_id = rs_table_itr->first_operand_ptr()->get_id();
+            size_t second_id = rs_table_itr->second_operand_ptr()->get_id();
+            size_t result_id = rs_table_itr->result_ptr()->get_id();
+            write_operated_matrix_object_ids.emplace(result_id);
+
+            if (!has_previous_write_operation(first_id) &&
+                    !has_previous_write_operation(second_id)) {
                 start_list.emplace_back(*rs_table_itr);
                 rs_table_itr = m_reservation_table.erase(rs_table_itr);
                 rs_table_itr--;
