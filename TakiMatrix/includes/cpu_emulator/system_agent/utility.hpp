@@ -11,6 +11,7 @@
 
 namespace TakiMatrix::processor {
     size_t calculate_size(const std::vector<size_t>& shape);
+
 } // namespace TakiMatrix::processor
 
 #endif // TAKIMATRIX_UTILITY_HPP
