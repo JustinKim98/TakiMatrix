@@ -1,14 +1,15 @@
-//
-// Created by jwkim98 on 19. 1. 12.
-//
+/**
+ * @file : matrix_object.hpp
+ * @author : Justin Kim
+ *
+ * matrix_object stores shape and data of the matrix
+ */
 
 #ifndef TAKIMATRIX_MATRIX_OBJECT_HPP
 #define TAKIMATRIX_MATRIX_OBJECT_HPP
 
 #include "../system_agent/utility.hpp"
 #include <atomic>
-#include <cassert>
-#include <cstdio>
 #include <vector>
 
 namespace TakiMatrix::processor {
@@ -16,35 +17,62 @@ namespace TakiMatrix::processor {
 
     class matrix_object {
     public:
-        matrix_object() = default;
         /**
          * constructs matrix_object with empty data(initialized to 0) with size of shape
+         *
          * @param shape : shape of new empty matrix_object
          */
         explicit matrix_object(const std::vector<size_t>& shape);
         /**
          * constructs matrix_object with vector
          * (Not associated with matrix object in user code)
+         *
          * @param data : data for this matrix
          * @param shape : shape of the data
          */
         matrix_object(const std::vector<float>& data,
                 const std::vector<size_t>& shape);
-
+        /**
+         * copy constructor for matrix_object
+         * assigns new m_matrix_object_id
+         *
+         * @param rhs : matrix_object to copy from
+         */
         matrix_object(const matrix_object& rhs);
-
+        /**
+         * equality operator
+         * compares m_data of this and new matrix
+         *
+         * @param first
+         * @return : true if equal false otherwise
+         */
         bool operator==(const matrix_object& first) const;
-
+        /**
+         * gets id of this matrix_object
+         * @return : m_matrix_id of this matrix_object
+         */
         size_t get_id() const;
-
+        /**
+         * sets m_is_completed to true(false as default)
+         */
         void set_ready();
-
+        /**
+         * returns if this matrix is ready
+         * @return : m_is_completed of this matrix_object
+         */
         bool is_ready();
-
+        /**
+         * returns shape of this matrix as 3 dimensional vector
+         * @return : m_shape of this matrix
+         */
         std::vector<size_t> get_shape();
 
+        size_t get_data_size();
+
     private:
+        /// data of this matrix
         std::vector<float> m_data;
+        /// shape of this matrix
         std::vector<size_t> m_shape;
         /// data size in bytes
         size_t m_data_size = 0;

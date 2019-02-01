@@ -1,21 +1,25 @@
-//
-// Created by jwkim98 on 19. 1. 12.
-//
+/**
+ * @file : matrix_object.cpp
+ * @author : Justin Kim
+ */
+
 #include "../../../includes/cpu_emulator/processor_util/matrix_object.hpp"
 
 namespace TakiMatrix::processor {
 
     matrix_object::matrix_object(const std::vector<size_t>& shape)
             :m_data(std::vector<float>(calculate_size(shape), 0)), m_shape(shape),
+            m_data_size(m_data.size()*sizeof(float)),
              m_matrix_object_id(++matrix_object_count) { }
 
     matrix_object::matrix_object(const std::vector<float>& data,
             const std::vector<size_t>& shape)
-            :m_data(data), m_shape(shape), m_data_size(data.size()*sizeof(float)),
+            :m_data(data), m_shape(shape), m_data_size(m_data.size()*sizeof(float)),
              m_matrix_object_id(++matrix_object_count) { }
 
     matrix_object::matrix_object(const matrix_object& rhs)
-            :m_data(rhs.m_data), m_shape(rhs.m_shape), m_data_size(rhs.m_data_size) { }
+            :m_data(rhs.m_data), m_shape(rhs.m_shape), m_data_size(rhs.m_data_size),
+             m_matrix_object_id(++matrix_object_count) { }
 
     bool matrix_object::operator==(const matrix_object& first) const
     {
@@ -29,5 +33,7 @@ namespace TakiMatrix::processor {
     bool matrix_object::is_ready() { return m_is_completed; }
 
     std::vector<size_t> matrix_object::get_shape() { return m_shape; }
+
+    size_t matrix_object::get_data_size() { return m_data_size; }
 
 } // namespace TakiMatrix::processor
