@@ -5,7 +5,6 @@
 #ifndef TAKIMATRIX_INSTRUCTION_QUEUE_HPP
 #define TAKIMATRIX_INSTRUCTION_QUEUE_HPP
 
-#include "../../cpu_emulator/processor_util/matrix_object.hpp"
 #include "../processor_util/instruction_set.hpp"
 #include <condition_variable>
 #include <thread>
