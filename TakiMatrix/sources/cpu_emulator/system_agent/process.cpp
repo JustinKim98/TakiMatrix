@@ -3,7 +3,6 @@
 //
 
 #include "../../../includes/cpu_emulator/system_agent/process.hpp"
-#include "../../../includes/cpu_emulator/processor_util/instruction_set.hpp"
 
 namespace TakiMatrix::processor {
 
@@ -23,6 +22,10 @@ namespace TakiMatrix::processor {
     void process::instruction_queue_wait_until_empty()
     {
         m_instruction_queue.wait_until_empty();
+    }
+
+    instruction_queue& process::get_instruction_queue(){
+        return m_instruction_queue;
     }
 
     std::deque<instruction> process::reservation_table_scan()

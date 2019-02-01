@@ -11,7 +11,6 @@
 
 #include "../front_end/instruction_queue.hpp"
 #include "../front_end/reservation_table.hpp"
-#include "../processor_util/instruction_set.hpp"
 #include <deque>
 #include <future>
 #include <list>
@@ -37,11 +36,6 @@ namespace TakiMatrix::processor {
     public:
         process();
 
-        void execute(std::thread to_execute);
-
-        void execute_async(std::thread to_execute);
-
-        void synchronize();
         /**
          * pushes instruction to concurrent instruction queue for this process
          * @param instruction : instruction to push into the queue
@@ -61,6 +55,8 @@ namespace TakiMatrix::processor {
          * inserts instruction to the reservation table
          * @param instruction : instruction to insert
          */
+        instruction_queue& get_instruction_queue();
+
         void reservation_table_insert(const instruction& instruction);
         /**
          * scans reservation table and collects instructions without dependency
@@ -72,7 +68,22 @@ namespace TakiMatrix::processor {
         instruction_queue m_instruction_queue;
         /// reservation table to store pending instructions to be executed
         reservation_table m_reservation_table;
-        size_t matrix_object_count = 0;
+        /// thread object for running m_fetch
+        std::thread m_fetch_thread;
+        /// thread object for running m_schedule;
+        std::thread m_schedule_thread;
+        /// gets instruction from m_instruction_queue and puts it into reservation table
+        std::function<void(void)> m_fetch =  [this](){
+            instruction inst = m_instruction_queue.pop();
+            m_reservation_table.insert(inst);
+        };
+        /// allocates dependency-free instructions to execution units
+        std::function<void(void)> m_schedule = [this](){
+            std::deque<instruction> start_list;
+            m_reservation_table.scan(start_list);
+            //TODO: put instructions into corresponding execution units
+        };
+
     };
 
 } // namespace TakiMatrix::processor
