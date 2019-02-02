@@ -18,31 +18,38 @@
 #include <thread>
 
 namespace TakiMatrix::processor {
-    /**
-     * base class for essential execution units
-     */
+/**
+ * base class for essential execution units
+ */
     class execution_unit {
     public:
         virtual ~execution_unit();
+
         /**
          * inserts instruction into m_instruction_queue
          * @param inst : instruction to allocate
          */
         virtual void allocate_instruction(instruction& inst);
+
         /**
          * starts thread for executing instructions in m_instruction_queue
          */
         void start();
+
         /**
          * enables executing thread
          */
         void enable() { m_enabled = true; }
+
         /**
          * disables executing thread
          */
         void disable() { m_enabled = false; }
 
     protected:
+        /// disable construction of default constructor
+        execution_unit() = default;
+        /// process
         virtual void process();
         /// concurrent instruction queue to store temporary instructions
         instruction_queue m_instruction_buffer;
@@ -50,29 +57,40 @@ namespace TakiMatrix::processor {
         std::thread m_thread;
         /// stops m_thread if false
         bool m_enabled = true;
+        /// function for calling the gpu kernel
+        std::function<void(instruction&&)> caller;
     };
 
     class add_eu : public execution_unit {
-    private:
-        void process() override;
+    public:
+        add_eu() { caller = add; }
 
-        void call_add(instruction&& inst);
+    private:
+        static std::function<void(instruction&&)> add;
     };
 
     class sub_eu : public execution_unit {
     public:
-    private:
-        void process() override;
+        sub_eu() { caller = sub; }
 
-        void call_sub(instruction&& inst);
+    private:
+        static std::function<void(instruction&&)> sub;
     };
 
     class mul_eu : public execution_unit {
     public:
-    private:
-        void process() override;
+        mul_eu() { caller = mul; }
 
-        void call_mul(instruction&& inst);
+    private:
+        static std::function<void(instruction&&)> mul;
+    };
+
+    class dot_eu : public execution_unit {
+    public:
+        dot_eu() { caller = dot; }
+
+    private:
+        static std::function<void(instruction&&)> dot;
     };
 } // namespace TakiMatrix::processor
 #endif // TAKIMATRIX_ADD_HPP
