@@ -25,7 +25,9 @@ add_library(${target} test.cpp test.cu
 		cpu_emulator/front_end/reservation_table.cpp
 		../includes/cpu_emulator/front_end/reservation_table.hpp
 		cpu_emulator/execution_units/units/essential_unit.cpp
-		../includes/cpu_emulator/execution_units/units/essential_unit.hpp)
+		../includes/cpu_emulator/execution_units/units/essential_unit.hpp
+		cpu_emulator/execution_units/kernels/kernels.cu
+        ../includes/cpu_emulator/execution_units/kernels/kernels.h cpu_emulator/execution_units/kernels/kernal_caller.cu ../includes/cpu_emulator/execution_units/kernels/kernal_caller.h)
 
 set_target_properties( ${target}
 		PROPERTIES CUDA_SEPARABLE_COMPILATION ON)

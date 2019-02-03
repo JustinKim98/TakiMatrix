@@ -34,8 +34,6 @@ namespace TakiMatrix::processor {
 
     class process {
     public:
-        process();
-
         /**
          * pushes instruction to concurrent instruction queue for this process
          * @param instruction : instruction to push into the queue
