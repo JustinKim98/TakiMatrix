@@ -67,7 +67,9 @@ namespace TakiMatrix::processor {
          */
         std::vector<size_t> get_shape();
 
-        size_t get_data_size();
+        size_t get_size();
+
+        float* get_data_ptr();
 
     private:
         /// data of this matrix
@@ -75,7 +77,7 @@ namespace TakiMatrix::processor {
         /// shape of this matrix
         std::vector<size_t> m_shape;
         /// data size in bytes
-        size_t m_data_size = 0;
+        size_t m_size = 0;
         /// unique id of this matrix_object
         size_t m_matrix_object_id = 0;
         /// set true if instruction is completed, and ready to be committed

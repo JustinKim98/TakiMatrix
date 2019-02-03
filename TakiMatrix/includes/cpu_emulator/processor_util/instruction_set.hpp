@@ -64,6 +64,8 @@ namespace TakiMatrix::processor {
 
         std::shared_ptr<matrix_object> second_operand_ptr();
 
+        const std::function<float(float)> functor();
+
     protected:
         /// type of this instruction
         instruction_type m_instruction_type;

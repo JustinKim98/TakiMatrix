@@ -22,8 +22,16 @@ namespace TakiMatrix::processor {
 
     std::shared_ptr<matrix_object> instruction::result_ptr() { return m_result; }
 
-    std::shared_ptr<matrix_object> instruction::first_operand_ptr() { return m_operand_first; }
+    std::shared_ptr<matrix_object> instruction::first_operand_ptr()
+    {
+        return m_operand_first;
+    }
 
-    std::shared_ptr<matrix_object> instruction::second_operand_ptr() { return m_operand_second; }
+    std::shared_ptr<matrix_object> instruction::second_operand_ptr()
+    {
+        return m_operand_second;
+    }
+
+    const std::function<float(float)> instruction::functor() { return m_functor; }
 
 } // namespace TakiMatrix::processor
