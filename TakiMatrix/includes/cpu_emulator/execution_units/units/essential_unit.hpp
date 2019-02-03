@@ -12,85 +12,85 @@
 #define TAKIMATRIX_ADD_HPP
 
 #include "../../front_end/instruction_queue.hpp"
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
+#include "../kernels/kernal_caller.h"
 #include <deque>
 #include <thread>
 
-namespace TakiMatrix::processor {
+using namespace TakiMatrix::processor;
+
 /**
  * base class for essential execution units
  */
-    class execution_unit {
-    public:
-        virtual ~execution_unit();
+class execution_unit {
+public:
+    virtual ~execution_unit();
 
-        /**
-         * inserts instruction into m_instruction_queue
-         * @param inst : instruction to allocate
-         */
-        virtual void allocate_instruction(instruction& inst);
+    /**
+     * inserts instruction into m_instruction_queue
+     * @param inst : instruction to allocate
+     */
+    virtual void allocate_instruction(instruction& inst);
 
-        /**
-         * starts thread for executing instructions in m_instruction_queue
-         */
-        void start();
+    /**
+     * starts thread for executing instructions in m_instruction_queue
+     */
+    void start();
 
-        /**
-         * enables executing thread
-         */
-        void enable() { m_enabled = true; }
+    /**
+     * enables executing thread
+     */
+    void enable() { m_enabled = true; }
 
-        /**
-         * disables executing thread
-         */
-        void disable() { m_enabled = false; }
+    /**
+     * disables executing thread
+     */
+    void disable() { m_enabled = false; }
 
-    protected:
-        /// disable construction of default constructor
-        execution_unit() = default;
-        /// process
-        virtual void process();
-        /// concurrent instruction queue to store temporary instructions
-        instruction_queue m_instruction_buffer;
-        /// thread object for executing instructions
-        std::thread m_thread;
-        /// stops m_thread if false
-        bool m_enabled = true;
-        /// function for calling the gpu kernel
-        std::function<void(instruction&&)> caller;
-    };
+protected:
+    /// disable construction of default constructor
+    execution_unit() = default;
+    /// process
+    virtual void process();
+    /// concurrent instruction queue to store temporary instructions
+    instruction_queue m_instruction_buffer;
+    /// thread object for executing instructions
+    std::thread m_thread;
+    /// stops m_thread if false
+    bool m_enabled = true;
+    /// function for calling the gpu kernel
+    std::function<void(instruction&&)> caller;
+};
 
-    class add_eu : public execution_unit {
-    public:
-        add_eu() { caller = add; }
+class add_eu : public execution_unit {
+public:
+    add_eu() { caller = add; }
 
-    private:
-        static std::function<void(instruction&&)> add;
-    };
+private:
+    static std::function<void(instruction&&)> add;
+};
 
-    class sub_eu : public execution_unit {
-    public:
-        sub_eu() { caller = sub; }
+class sub_eu : public execution_unit {
+public:
+    sub_eu() { caller = sub; }
 
-    private:
-        static std::function<void(instruction&&)> sub;
-    };
+private:
+    static std::function<void(instruction&&)> sub;
+};
 
-    class mul_eu : public execution_unit {
-    public:
-        mul_eu() { caller = mul; }
+class mul_eu : public execution_unit {
+public:
+    mul_eu() { caller = mul; }
 
-    private:
-        static std::function<void(instruction&&)> mul;
-    };
+private:
+    static std::function<void(instruction&&)> mul;
+};
 
-    class dot_eu : public execution_unit {
-    public:
-        dot_eu() { caller = dot; }
+class dot_eu : public execution_unit {
+public:
+    dot_eu() { caller = dot; }
 
-    private:
-        static std::function<void(instruction&&)> dot;
-    };
-} // namespace TakiMatrix::processor
+private:
+    static std::function<void(instruction&&)> dot;
+};
+
 #endif // TAKIMATRIX_ADD_HPP

@@ -4,110 +4,90 @@
 
 #include "../../../../includes/cpu_emulator/execution_units/units/essential_unit.hpp"
 
-namespace TakiMatrix::processor {
+execution_unit::~execution_unit() { m_thread.join(); }
 
-    execution_unit::~execution_unit() { m_thread.join(); }
+void execution_unit::allocate_instruction(instruction& inst)
+{
+    m_instruction_buffer.push(inst);
+}
 
-    void execution_unit::allocate_instruction(instruction& inst)
-    {
-        m_instruction_buffer.push(inst);
+void execution_unit::start()
+{
+    m_thread = std::thread([this] { process(); });
+}
+
+void execution_unit::process()
+{
+    while (m_enabled) {
+        caller(m_instruction_buffer.pop());
     }
+}
 
-    void execution_unit::start()
-    {
-        m_thread = std::thread([this] { process(); });
+std::function<void(instruction&&)> add_eu::add = [](instruction&& inst) {
+    size_t operand_a_size = inst.first_operand_ptr()->get_size();
+    size_t operand_b_size = inst.second_operand_ptr()->get_size();
+    size_t size = 0;
+
+    if (operand_a_size==operand_b_size) {
+        size = operand_a_size;
     }
+    // TODO: exception handling for size mismatch
 
-    void execution_unit::process()
-    {
-        while (m_enabled) {
-            caller(m_instruction_buffer.pop());
-        }
+    float* operand_a_ptr = inst.first_operand_ptr()->get_data_ptr();
+    float* operand_b_ptr = inst.second_operand_ptr()->get_data_ptr();
+
+    kernel::call_add(operand_a_ptr, operand_b_ptr, size);
+};
+
+std::function<void(instruction&&)> sub_eu::sub = [](instruction&& inst) {
+    size_t operand_a_size = inst.first_operand_ptr()->get_size();
+    size_t operand_b_size = inst.second_operand_ptr()->get_size();
+    size_t size = 0;
+
+    if (operand_a_size==operand_b_size) {
+        size = operand_a_size;
     }
+    // TODO: exception handling for size mismatch
 
+    float* operand_a_ptr = inst.first_operand_ptr()->get_data_ptr();
+    float* operand_b_ptr = inst.second_operand_ptr()->get_data_ptr();
 
+    kernel::call_sub(operand_a_ptr, operand_b_ptr, size);
+};
 
-    std::function<void(instruction&&)> add_eu::add = [](instruction&& inst) {
-        float* device_operand_a;
-        float* device_operand_b; // stores operand_second and result
-        size_t operand_a_size = inst.first_operand_ptr()->get_data_size();
-        size_t operand_b_size = inst.second_operand_ptr()->get_data_size();
+std::function<void(instruction&&)> mul_eu::mul = [](instruction&& inst) {
+    size_t operand_a_size = inst.first_operand_ptr()->get_size();
+    size_t operand_b_size = inst.second_operand_ptr()->get_size();
+    size_t result_size = inst.result_ptr()->get_size();
 
-        cudaMalloc((void**) &device_operand_a, operand_a_size);
-        cudaMalloc((void**) &device_operand_b, operand_b_size);
+    float* operand_a_ptr = inst.first_operand_ptr()->get_data_ptr();
+    float* operand_b_ptr = inst.second_operand_ptr()->get_data_ptr();
+    float* result_ptr = inst.result_ptr()->get_data_ptr();
 
-        cudaMemcpy(device_operand_a, inst.first_operand_ptr().get(), operand_a_size,
-                cudaMemcpyHostToDevice);
-        cudaMemcpy(device_operand_b, inst.second_operand_ptr().get(), operand_a_size,
-                cudaMemcpyHostToDevice);
-        // TODO: call the kernel here
-        cudaMemcpy(inst.result_ptr().get(), device_operand_b, operand_b_size,
-                cudaMemcpyDeviceToHost);
-        cudaFree(device_operand_a);
-        cudaFree(device_operand_b);
-    };
+    std::vector<size_t> operand_a_shape = inst.first_operand_ptr()->get_shape();
+    std::vector<size_t> operand_b_shape = inst.second_operand_ptr()->get_shape();
 
-    std::function<void(instruction&&)> sub_eu::sub = [](instruction&& inst) {
-        float* device_operand_a;
-        float* device_operand_b; // stores operand_second and result
-        size_t operand_a_size = inst.first_operand_ptr()->get_data_size();
-        size_t operand_b_size = inst.second_operand_ptr()->get_data_size();
+    size_t middle_size = 0;
+    size_t dimension_size = 0;
+    if (operand_a_shape.at(1)==operand_a_shape.at(0))
+        middle_size = operand_a_shape.at(1);
 
-        cudaMalloc((void**) &device_operand_a, operand_a_size);
-        cudaMalloc((void**) &device_operand_b, operand_b_size);
+    if(operand_a_shape.at(2) == operand_b_shape.at(2))
+        dimension_size = operand_a_shape.at(2);
 
-        cudaMemcpy(device_operand_a, inst.first_operand_ptr().get(), operand_a_size,
-                cudaMemcpyHostToDevice);
-        cudaMemcpy(device_operand_b, inst.second_operand_ptr().get(), operand_a_size,
-                cudaMemcpyHostToDevice);
-        // TODO: call the kernel here
-        cudaMemcpy(inst.result_ptr().get(), device_operand_b, operand_b_size,
-                cudaMemcpyDeviceToHost);
-        cudaFree(device_operand_a);
-        cudaFree(device_operand_b);
-    };
+    kernel::call_mul(operand_a_ptr, operand_b_ptr, result_ptr, middle_size,
+            operand_a_shape.at(0), operand_b_shape.at(1), dimension_size);
+};
 
-    std::function<void(instruction&&)> mul_eu::mul = [](instruction&& inst) {
-        float* device_operand_a;
-        float* device_operand_b;
-        float* device_result;
-        size_t operand_a_size = inst.first_operand_ptr()->get_data_size();
-        size_t operand_b_size = inst.second_operand_ptr()->get_data_size();
-        size_t result_size = inst.result_ptr()->get_data_size();
+std::function<void(instruction&&)> dot_eu::dot = [](instruction&& inst) {
+    size_t operand_a_size = inst.first_operand_ptr()->get_size();
+    size_t size = operand_a_size;
 
-        cudaMalloc((void**) &device_operand_a, operand_a_size);
-        cudaMalloc((void**) &device_operand_b, operand_b_size);
-        cudaMalloc((void**) &device_result, result_size);
+    std::function<float(float)> functor = inst.functor();
 
-        cudaMemcpy(device_operand_a, inst.first_operand_ptr().get(), operand_a_size,
-                cudaMemcpyHostToDevice);
-        cudaMemcpy(device_operand_b, inst.second_operand_ptr().get(), operand_a_size,
-                cudaMemcpyHostToDevice);
-        // TODO: call the kernel here
-        cudaMemcpy(inst.result_ptr().get(), device_result, result_size,
-                cudaMemcpyDeviceToHost);
-        cudaFree(device_operand_a);
-        cudaFree(device_operand_b);
-        cudaFree(device_result);
-    };
+    // TODO: exception handling for size mismatch
 
-    std::function<void(instruction&&)> dot_eu::dot = [](instruction&& inst) {
-        float* device_operand_a;
-        float* device_operand_b; // stores operand_second and result
-        size_t operand_a_size = inst.first_operand_ptr()->get_data_size();
-        size_t operand_b_size = inst.second_operand_ptr()->get_data_size();
+    float* operand_a_ptr = inst.first_operand_ptr()->get_data_ptr();
 
-        cudaMalloc((void**) &device_operand_a, operand_a_size);
-        cudaMalloc((void**) &device_operand_b, operand_b_size);
-
-        cudaMemcpy(device_operand_a, inst.first_operand_ptr().get(), operand_a_size,
-                cudaMemcpyHostToDevice);
-        cudaMemcpy(device_operand_b, inst.second_operand_ptr().get(), operand_a_size,
-                cudaMemcpyHostToDevice);
-        // TODO: call the kernel here
-        cudaMemcpy(inst.result_ptr().get(), device_operand_b, operand_b_size,
-                cudaMemcpyDeviceToHost);
-        cudaFree(device_operand_a);
-        cudaFree(device_operand_b);
-    };
-} // namespace TakiMatrix::processor
+    kernel::call_dot(operand_a_ptr, functor, size);
+};
