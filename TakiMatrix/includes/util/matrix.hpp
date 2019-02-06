@@ -56,6 +56,10 @@ namespace TakiMatrix {
         matrix operator-(const matrix& first);
 
         matrix operator*(const matrix& first);
+
+        matrix& operator=(const matrix& first) = default;
+
+        matrix& operator=(matrix&& first) = default;
         /**
          * @brief : compares matrices element by element
          * @param first : matrix to compare with

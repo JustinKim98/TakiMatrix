@@ -68,4 +68,6 @@ namespace TakiMatrix {
         return m_matrix_ptr;
     }
 
+
+
 } // namespace TakiMatrix

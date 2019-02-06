@@ -20,6 +20,12 @@ namespace TakiMatrix::processor {
             :m_data(rhs.m_data), m_shape(rhs.m_shape), m_size(rhs.m_size),
              m_matrix_object_id(++matrix_object_count) { }
 
+    matrix_object::~matrix_object()
+    {
+        if (device_ptr!=nullptr)
+            cudaFree(device_ptr);
+    }
+
     bool matrix_object::operator==(const matrix_object& first) const
     {
         return first.m_data==m_data;

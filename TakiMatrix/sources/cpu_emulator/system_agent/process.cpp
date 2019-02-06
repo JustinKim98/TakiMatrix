@@ -7,7 +7,7 @@
 namespace TakiMatrix::processor {
 
     void process::instruction_queue_push(
-            const TakiMatrix::processor::instruction& instruction)
+            const instruction& instruction)
     {
         m_instruction_queue.push(instruction);
     }
