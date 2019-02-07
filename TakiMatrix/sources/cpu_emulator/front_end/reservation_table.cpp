@@ -20,6 +20,9 @@ namespace TakiMatrix::processor {
         m_cond.notify_all();
     }
 
+    reservation_table::reservation_table(reservation_table&& rs_table) noexcept
+            :m_maximum_table_size(rs_table.m_maximum_table_size) { }
+
     void reservation_table::scan(std::deque<instruction>& start_list)
     {
         /**

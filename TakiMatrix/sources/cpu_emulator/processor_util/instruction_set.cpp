@@ -34,4 +34,6 @@ namespace TakiMatrix::processor {
 
     const std::function<float(float)> instruction::functor() { return m_functor; }
 
+    instruction_type instruction::type() { return m_instruction_type; }
+
 } // namespace TakiMatrix::processor

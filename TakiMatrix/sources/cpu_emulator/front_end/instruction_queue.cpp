@@ -22,9 +22,7 @@ namespace TakiMatrix::processor {
     instruction instruction_queue::pop()
     {
         std::unique_lock<std::mutex> lock(instruction_queue_mtx);
-        m_cond.wait(lock, [this]() {
-            return !m_instruction_queue.empty();
-        });
+        m_cond.wait(lock, [this]() { return !m_instruction_queue.empty(); });
         instruction instruction = m_instruction_queue.front();
         m_instruction_queue.pop_front();
         lock.unlock();
@@ -42,5 +40,7 @@ namespace TakiMatrix::processor {
         std::unique_lock<std::mutex> lock(instruction_queue_mtx);
         m_cond.wait(lock, [&matrix_ptr]() { return matrix_ptr->is_ready(); });
     }
+
+    size_t instruction_queue::size() { return m_instruction_queue.size(); }
 
 } // namespace TakiMatrix::processor

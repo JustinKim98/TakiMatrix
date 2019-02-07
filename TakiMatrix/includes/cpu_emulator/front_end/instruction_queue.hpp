@@ -41,6 +41,8 @@ namespace TakiMatrix::processor {
          */
         instruction pop();
 
+        size_t size();
+
     private:
         /// m_maximum_queue_size
         const size_t m_maximum_queue_size;
