@@ -46,6 +46,12 @@ public:
      */
     void disable() { m_enabled = false; }
 
+    /**
+     * returns instruction buffer size
+     * @return : size of internal instruction buffer
+     */
+    size_t size() { return m_instruction_buffer.size()}
+
 protected:
     /// disable construction of default constructor
     execution_unit() = default;
