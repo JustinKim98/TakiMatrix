@@ -50,7 +50,7 @@ public:
      * returns instruction buffer size
      * @return : size of internal instruction buffer
      */
-    size_t size() { return m_instruction_buffer.size()}
+    size_t size() { return m_instruction_buffer.size(); }
 
 protected:
     /// disable construction of default constructor

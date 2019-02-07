@@ -7,7 +7,7 @@
 
 #include "../cpu_emulator/processor_util/instruction_set.hpp"
 #include "../cpu_emulator/processor_util/matrix_object.hpp"
-#include "../cpu_emulator/system_agent/process.hpp"
+#include "../cpu_emulator/system_agent/compute_unit.hpp"
 #include <condition_variable>
 #include <memory>
 
@@ -25,7 +25,7 @@ namespace TakiMatrix {
          * @param data : data to initialize the matrix
          * @param shape : shape of the data (shape must match the size of data)
          */
-        matrix(std::reference_wrapper<process> processor, const std::vector<float>& data,
+        matrix(std::reference_wrapper<compute_unit> processor, const std::vector<float>& data,
                 const std::vector<size_t>& shape);
         /**
          * construct matrix object using matrix_object_ptr
@@ -33,7 +33,7 @@ namespace TakiMatrix {
          * @param matrix_object_ptr : shared pointer to matrix_object_ptr to
          * initialize the matrix
          */
-        explicit matrix(std::reference_wrapper<process> processor,
+        explicit matrix(std::reference_wrapper<compute_unit> processor,
                 std::shared_ptr<matrix_object>& matrix_object_ptr);
         /**
          * copy constructor for this matrix
@@ -78,7 +78,7 @@ namespace TakiMatrix {
     private:
         /// pointer to matrix_object
         std::shared_ptr<matrix_object> m_matrix_ptr;
-        std::reference_wrapper<process> m_processor;
+        std::reference_wrapper<compute_unit> m_processor;
     };
 } // namespace TakiMatrix
 

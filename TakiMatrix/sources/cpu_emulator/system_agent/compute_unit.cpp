@@ -2,11 +2,22 @@
 // Created by jwkim98 on 19. 1. 14.
 //
 
-#include "../../../includes/cpu_emulator/system_agent/process.hpp"
+#include "../../../includes/cpu_emulator/system_agent/compute_unit.hpp"
 
 namespace TakiMatrix::processor {
+    compute_unit::compute_unit()
+    {
+        //TODO: make move constructors && operators for execution units!
+   //     std::vector<execution_unit> add_units(10,add_eu());
+   //     std::vector<execution_unit> sub_units(10, sub_eu());
+   //     std::vector<execution_unit> mul_units(10, mul_eu());
+   //     std::vector<execution_unit> dot_units(10, dot_eu());
+   //     std::vector<std::vector<execution_unit>> execution_unit_vectors{
+   //             add_units, sub_units, mul_units, dot_units};
+        //m_execution_unit_vectors = execution_unit_vectors;
+    }
 
-    process::~process()
+    compute_unit::~compute_unit()
     {
         auto thread_itr = m_thread_map.begin();
         for (; thread_itr!=m_thread_map.end(); ++thread_itr) {
@@ -14,13 +25,15 @@ namespace TakiMatrix::processor {
         }
     }
 
-    void process::reservation_table_insert(const instruction& instruction,
+    void compute_unit::reservation_table_insert(const instruction& instruction,
             std::thread::id tid)
     {
+
         auto rs_table_ptr = m_rs_map.find(tid);
         if (rs_table_ptr==m_rs_map.end())
             m_rs_map.insert(std::make_pair(tid, reservation_table()));
         auto thread_ptr = m_thread_map.find(tid);
+
         if (thread_ptr==m_thread_map.end())
             m_thread_map.insert(
                     std::make_pair(tid, std::thread([this, tid]() { schedule(tid); })));
@@ -28,14 +41,15 @@ namespace TakiMatrix::processor {
         rs_table_ptr->second.insert(instruction);
     }
 
-    std::deque<instruction> process::reservation_table_scan()
+    std::deque<instruction> compute_unit::reservation_table_scan()
     {
         std::deque<instruction> start_list;
         m_reservation_table.scan(start_list);
         return start_list;
     }
 
-    void process::schedule(std::thread::id tid)
+
+    void compute_unit::schedule(std::thread::id tid)
     {
         while (m_is_activated) {
             std::deque<instruction> start_list;
@@ -43,15 +57,19 @@ namespace TakiMatrix::processor {
             auto itr = start_list.begin();
 
             for (; itr!=start_list.end(); ++itr) {
-                auto inst_type = static_cast<size_t>(itr->type());
-                m_execution_units.at(inst_type).at(0).allocate_instruction(*itr);
+                auto instruction_id = static_cast<size_t>(itr->type());
+                size_t unit_id = smallest_unit_idx(itr->type());
+                m_execution_unit_vectors.at(instruction_id)
+                        .at(unit_id)
+                        .allocate_instruction(*itr);
             }
         }
     }
 
-    size_t process::smallest_queue_idx(instruction_type type){
-        std::vector<execution_unit> units =
-                m_execution_units.at(static_cast<size_t>(type));
+    size_t compute_unit::smallest_unit_idx(instruction_type type)
+    {
+        std::vector<execution_unit>& units =
+                m_execution_unit_vectors.at(static_cast<size_t>(type));
         auto eu_ptr = units.begin();
 
         size_t minimum_buffer_size = -1;
@@ -62,6 +80,5 @@ namespace TakiMatrix::processor {
         }
         return minimum_buffer_size;
     }
-
 
 } // namespace TakiMatrix::processor

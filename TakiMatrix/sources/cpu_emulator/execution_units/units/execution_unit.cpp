@@ -2,7 +2,7 @@
  * @file : essential_unit.cpp
  */
 
-#include "../../../../includes/cpu_emulator/execution_units/units/essential_unit.hpp"
+#include "../../../../includes/cpu_emulator/execution_units/units/execution_unit.hpp"
 
 execution_unit::~execution_unit() { m_thread.join(); }
 
