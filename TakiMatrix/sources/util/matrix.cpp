@@ -1,49 +1,75 @@
 //
-// Created by jwkim98 on 19. 1. 6.
+// Created by jwkim98 on 19/01/14.
 //
 
 #include "../../includes/util/matrix.hpp"
 
 namespace TakiMatrix {
-
-    Matrix::Matrix(std::vector<float>& rhs, const std::vector<int>& shape)
+    matrix::matrix(std::reference_wrapper<compute_unit> processor, const std::vector<float>& data,
+            const std::vector<size_t>& shape)
+            :m_processor(processor)
     {
-        int shape_size = 1;
-        for (int elem : shape) {
-            shape_size *= elem;
-        }
-
-        if (rhs.size()==shape_size)
-            data = rhs;
-        else {
-            // TODO print and log error
-        }
-        this->shape = shape;
+        m_matrix_ptr = std::make_shared<matrix_object>(data, shape);
     }
 
-    Matrix::Matrix(Matrix& matrix) { data = matrix.data; }
-
-    Matrix& Matrix::operator=(const Matrix& matrix)
+    matrix::matrix(std::reference_wrapper<compute_unit> processor,
+            std::shared_ptr<matrix_object>& matrix_object_ptr)
+            :m_processor(processor)
     {
-        data = matrix.data;
-        return *this;
+        m_matrix_ptr = matrix_object_ptr;
     }
 
-    Matrix& Matrix::operator+(const Matrix& matrix) { }
-
-    Matrix& Matrix::operator-(const Matrix& matrix) { }
-
-    Matrix& Matrix::operator*(const Matrix& matrix) { }
-
-    Matrix& Matrix::operator/(const Matrix& matrix) { }
-
-    bool Matrix::operator==(const Matrix& matrix) const
+    matrix matrix::operator+(const matrix& first)
     {
-        return data==matrix.data;
+        std::vector<size_t> shape = m_matrix_ptr->get_shape();
+
+        std::shared_ptr<matrix_object> result_ptr =
+                std::make_shared<matrix_object>(shape);
+        auto temp =
+                instruction(instruction_type::add, m_matrix_ptr, first.m_matrix_ptr, result_ptr);
+        m_processor.get().reservation_table_insert(temp);
+        return matrix(m_processor, result_ptr);
     }
 
-    bool Matrix::operator!=(const Matrix& matrix) const
+    matrix matrix::operator-(const matrix& first)
     {
-        return !(matrix==*this);
+        std::vector<size_t> shape = m_matrix_ptr->get_shape();
+        std::shared_ptr<matrix_object> result_ptr =
+                std::make_shared<matrix_object>(shape);
+        auto temp =
+                instruction(instruction_type::sub, m_matrix_ptr, first.m_matrix_ptr, result_ptr);
+        m_processor.get().reservation_table_insert(temp);
+        return matrix(m_processor, result_ptr);
     }
+
+    matrix matrix::operator*(const matrix& first)
+    {
+        std::vector<size_t> shape{m_matrix_ptr->get_shape().at(0),
+                                  first.m_matrix_ptr->get_shape().at(1), 0};
+        std::shared_ptr<matrix_object> result_ptr =
+                std::make_shared<matrix_object>(shape);
+        auto temp =
+                instruction(instruction_type::mul, m_matrix_ptr, first.m_matrix_ptr, result_ptr);
+        m_processor.get().reservation_table_insert(temp);
+        return matrix(m_processor, result_ptr);
+    }
+
+    bool matrix::operator==(const matrix& first)
+    {
+        //m_processor.get().reservation_table_insert().wait_for(first.matrix_ptr());
+        return *(first.m_matrix_ptr)==*m_matrix_ptr;
+    }
+
+    bool matrix::operator!=(const matrix& first) { return !(*this==first); }
+
+    std::shared_ptr<matrix_object> matrix::matrix_ptr() const{
+        /*
+        if(!m_matrix_ptr->is_ready())
+            m_processor.get().reservation_table_insert().wait_for(m_matrix_ptr);
+            */
+        return m_matrix_ptr;
+    }
+
+
+
 } // namespace TakiMatrix

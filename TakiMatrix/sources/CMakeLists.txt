@@ -9,7 +9,26 @@ include_directories(
 		${CMAKE_CURRENT_SOURCE_DIR}/../../Includes
 )
 
-add_library(${target} test.cpp test.cu ../includes/test.h util/matrix.cpp ../includes/util/matrix.hpp ../includes/kernel/kernel.h)
+add_library(${target} test.cpp test.cu
+		../includes/test.h
+		cpu_emulator/processor_util/instruction_set.cpp
+		../includes/cpu_emulator/processor_util/instruction_set.hpp
+		cpu_emulator/processor_util/matrix_object.cpp
+		../includes/cpu_emulator/processor_util/matrix_object.hpp
+        cpu_emulator/front_end/instruction_queue.cpp
+        ../includes/cpu_emulator/front_end/instruction_queue.hpp
+		cpu_emulator/system_agent/process.cpp
+		../includes/cpu_emulator/system_agent/process.hpp
+		../includes/util/matrix.hpp util/matrix.cpp
+		cpu_emulator/system_agent/utility.cpp
+		../includes/cpu_emulator/system_agent/utility.hpp
+		cpu_emulator/front_end/reservation_table.cpp
+		../includes/cpu_emulator/front_end/reservation_table.hpp
+		cpu_emulator/execution_units/units/essential_unit.cpp
+		../includes/cpu_emulator/execution_units/units/essential_unit.hpp
+		cpu_emulator/execution_units/kernels/kernels.cu
+        ../includes/cpu_emulator/execution_units/kernels/kernels.h cpu_emulator/execution_units/kernels/kernal_caller.cu ../includes/cpu_emulator/execution_units/kernels/kernal_caller.h)
+
 set_target_properties( ${target}
 		PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
